@@ -1,5 +1,6 @@
 import { t, lang, setLang } from './i18n.js';
 import { store } from './store.js';
+import { ghsByCas } from './pubchem.js';
 
 export const app = document.getElementById('app');
 
@@ -40,6 +41,17 @@ export function photoImg(path) {
 }
 
 
+
+// Mentions H d'un réactif (PubChem) : chargées après l'affichage, avec le lien vers la fiche.
+export function ghsChips(cas) {
+  const box = h('div', { class: 'hazards' });
+  if (!cas) return box;
+  ghsByCas(cas).then((list) => box.replaceChildren(
+    ...(list ? list.map((g) => h('span', { class: 'hazard', title: g.text }, g.code)) : [h('small', {}, t('pubchemDown'))]),
+    h('a', { href: `https://pubchem.ncbi.nlm.nih.gov/#query=${cas}`, target: '_blank', rel: 'noopener' }, 'PubChem'),
+  ));
+  return box;
+}
 
 export function sheet(...kids) {
   const el = h('div', { class: 'sheet-wrap' }, h('div', { class: 'sheet' }, ...kids));

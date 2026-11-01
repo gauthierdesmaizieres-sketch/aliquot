@@ -1,6 +1,6 @@
 import { t } from './i18n.js';
 import { store } from './store.js';
-import { app, h, link, button, safeHttp, sheet, topbar, langSwitch, tabs } from './ui.js';
+import { app, h, link, button, safeHttp, sheet, topbar, langSwitch, tabs, ghsChips } from './ui.js';
 import { POSTES, ZONES, W, H, runningByPoste } from './plan-data.js';
 
 const RUNNING = 'style="--liquid: #2F80ED; --anim: bob 1.8s ease-in-out infinite"';
@@ -40,6 +40,7 @@ function posteSheet(poste, reactions) {
   const row = (r) => h('div', { class: 'card' },
     h('strong', {}, r.code), r.title && h('div', {}, r.title),
     h('div', { class: 'hazards' }, r.hazards.map((k) => h('span', { class: 'hazard' }, t(`hz_${k}`)))),
+    r.reagents.filter((x) => x.cas).map((x) => h('div', {}, `${x.name || x.cas} `, ghsChips(x.cas))),
     safeHttp(r.sds_links).map((u) => h('a', { href: u, rel: 'noopener', target: '_blank' }, `SDS : ${new URL(u).hostname}`)),
     link(`#/r/${r.id}`, t('open'), 'btn ghost'));
   const panel = sheet(

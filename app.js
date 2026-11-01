@@ -1,7 +1,7 @@
 import { t, STEPS, HAZARDS, COLORS } from './i18n.js';
 import { store, isDemo, newReaction } from './store.js';
 import { tlcValues, rf } from './rf.js';
-import { app, h, when, day, link, button, safeHttp, fail, field, photoImg, sheet, topbar, langSwitch, shrink, tabs } from './ui.js';
+import { app, h, when, day, link, button, safeHttp, fail, field, photoImg, sheet, topbar, langSwitch, shrink, tabs, ghsChips } from './ui.js';
 import { transferHome, transferRoom, stopTransfer } from './transfer.js';
 import { reagentListView, reagentFormView, reagentDetailView, suppliersView } from './reagents.js';
 import { planView } from './plan.js';
@@ -86,8 +86,8 @@ function formView(r, stock) {
   const area = (key) => h('textarea', { rows: 3, value: r[key] ?? '', onInput: (e) => { r[key] = e.target.value; } });
   const list = h('div', { class: 'stack' });
   const drawReagents = () => list.replaceChildren(...r.reagents.map((x, i) => h('div', { class: 'reagent' },
-    ['name', 'lot', 'ref'].map((k) => h('input', {
-      placeholder: t({ name: 'reagentName', lot: 'reagentLot', ref: 'reagentRef' }[k]), ariaLabel: k, value: x[k] ?? '',
+    ['name', 'lot', 'ref', 'cas'].map((k) => h('input', {
+      placeholder: t({ name: 'reagentName', lot: 'reagentLot', ref: 'reagentRef', cas: 'reagentCas' }[k]), ariaLabel: k, value: x[k] ?? '',
       onInput: (e) => { x[k] = e.target.value; },
     })),
     button('×', () => { r.reagents.splice(i, 1); drawReagents(); }, 'btn ghost'))));
@@ -101,7 +101,7 @@ function formView(r, stock) {
   }, t(`hz_${k}`))));
   const submit = (e) => {
     e.preventDefault();
-    r.reagents = r.reagents.filter((x) => x.name || x.lot || x.ref);
+    r.reagents = r.reagents.filter((x) => x.name || x.lot || x.ref || x.cas);
     if (!r.end_planned) r.end_planned = null;
     store.saveReaction(r).then((saved) => { location.hash = `#/r/${saved.id}`; }).catch(fail);
   };
@@ -241,7 +241,7 @@ async function detailView(id) {
         h('span', { class: `pill ${reaction.status}` }, t(reaction.status)),
         link(`#/report/${id}`, t('report')), link(`#/label/${id}`, t('label')),
         button(reaction.status === 'running' ? t('markDone') : t('markRunning'), toggle, 'btn ghost')),
-      reaction.reagents.length > 0 && h('section', {}, h('h2', {}, t('reagents')), h('ul', {}, reaction.reagents.map((x) => h('li', {}, [x.name, x.lot && `Lot ${x.lot}`, x.ref].filter(Boolean).join(' · '))))),
+      reaction.reagents.length > 0 && h('section', {}, h('h2', {}, t('reagents')), h('ul', {}, reaction.reagents.map((x) => h('li', {}, [x.name, x.lot && `Lot ${x.lot}`, x.ref].filter(Boolean).join(' · '), ghsChips(x.cas))))),
       plates.length > 1 && h('section', {}, h('h2', {}, t('tlcCompare')),
         h('div', { class: 'strip' }, plates.map((e) => h('figure', {}, plate(e), h('figcaption', {}, when(e.taken_at)))))),
       h('h2', {}, t('timeline')),
