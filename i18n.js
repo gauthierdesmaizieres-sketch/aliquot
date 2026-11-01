@@ -1,0 +1,106 @@
+const fr = {
+  trTitle: 'Envoyer des photos du téléphone au PC', trIntro: 'Sans compte. Lance la réception sur le PC, scanne le QR avec le téléphone, et les photos arrivent ici. Elles sont effacées après 24 heures.',
+  trStart: 'Démarrer la réception', labSpace: 'Espace labo (réactions et réactifs)', trRoom: 'Réception de photos', trScan: 'Scanne ce QR avec le téléphone. Toute personne qui a ce QR voit les photos de cette session.',
+  trGallery: 'Choisir dans la galerie', trRetry: 'Réessayer l’envoi', trDownload: 'Télécharger', trClose: 'Terminer et tout effacer',
+  trCloseConfirm: 'Effacer définitivement toutes les photos de cette session ?', trExpiry: 'Cette session s’efface automatiquement après 24 heures.',
+  stock: 'Réactifs', scan: 'Scanner une étiquette', newReagent: 'Nouveau réactif', noReagents: 'Aucun réactif pour l’instant.',
+  product: 'Produit', supplier: 'Fournisseur', ref: 'Référence', lot: 'Lot / batch', expiry: 'Péremption', location: 'Emplacement',
+  morePhoto: 'Ajouter une photo de l’étiquette', reading: 'Lecture de l’étiquette…', readDone: 'Vérifie les champs avant d’enregistrer.',
+  expired: 'Périmé', soon: 'Bientôt périmé', search: 'Rechercher', profiles: 'Profils fournisseurs', addSupplier: 'Ajouter un fournisseur',
+  matchWords: 'Mots qui identifient le fournisseur', lotKeys: 'Mots repères du lot', refKeys: 'Mots repères de la référence', expiryKeys: 'Mots repères de la péremption',
+  keysHelp: 'Séparés par des virgules. Laisse vide pour utiliser les mots courants (Lot, Batch, Cat. No…).',
+  learn: 'Ajouter « {w} » aux mots repères du lot pour {s} ?', fromStock: 'Choisir depuis le stock…',
+  coa: 'Certificat d’analyse (CoA)', addCoa: 'Joindre le CoA', openCoa: 'Ouvrir le CoA', sendCoa: 'Envoyer CoA + lot + référence', noCoa: 'Pas encore de CoA.',
+  sent: 'CoA téléchargé. Lot et référence copiés : colle-les où tu veux.',
+  appName: 'Paillasse', reactions: 'Réactions', newReaction: 'Nouvelle réaction', noReactions: 'Aucune réaction pour l’instant.',
+  status: 'Statut', running: 'En cours', done: 'Terminée', markDone: 'Marquer terminée', markRunning: 'Remettre en cours',
+  demo: 'Mode démo : les données restent dans ce navigateur.',
+  email: 'Adresse e-mail', password: 'Mot de passe (6 caractères minimum)', signUp: 'Créer mon compte', signIn: 'Se connecter', confirmSent: 'Compte créé. Clique sur le lien reçu par e-mail, puis connecte-toi ici.', signOut: 'Déconnexion',
+  notAllowed: 'Ce compte n’est pas dans l’équipe. Demande à être ajouté.',
+  codeLabel: 'N° du cahier de labo', title: 'Titre', reagents: 'Réactifs', addReagent: 'Ajouter un réactif',
+  reagentName: 'Produit', reagentLot: 'Lot', reagentRef: 'Référence',
+  safety: 'Sécurité', hazards: 'Dangers', extinguisher: 'Agent d’extinction (SDS, section 5)',
+  extinguisherHelp: 'À reprendre de la SDS et à faire valider. L’app ne propose aucune consigne par elle-même.',
+  instructions: 'Consignes en cas d’incident', responsible: 'Responsable', phone: 'Téléphone', endPlanned: 'Fin prévue',
+  sdsLinks: 'Liens SDS (un par ligne)', checkedBy: 'Sécurité vérifiée par',
+  save: 'Enregistrer', cancel: 'Annuler', edit: 'Modifier', delete: 'Supprimer', back: 'Retour',
+  confirmDelete: 'Supprimer définitivement ?', saving: 'Enregistrement…',
+  photo: 'Photo', note: 'Note', step: 'Étape', color: 'Couleur de la solution', noteText: 'Remarque',
+  timeline: 'Déroulé', noEntries: 'Pas encore de photo. Utilise le bouton Photo.',
+  tlcCompare: 'Comparer les CCM', measureRf: 'Mesurer le Rf', tlcBase: 'Ligne de dépôt', tlcFront: 'Front du solvant', tlcSpot: 'Taches',
+  tlcHelp: 'Touche la ligne de dépôt, puis le front, puis chaque tache.', undo: 'Annuler la dernière',
+  report: 'Rapport PDF', printPdf: 'Imprimer / enregistrer en PDF', label: 'Étiquette QR', printLabel: 'Imprimer l’étiquette',
+  export: 'Exporter en Excel', scanQr: 'Scanner pour la fiche complète',
+  plan: 'Plan', planHelp: 'Touche un poste pour voir les réactions en cours et les fiches SDS.', free: 'Libre', noRunning: 'Aucune réaction en cours à ce poste.',
+  poste: 'Poste', choosePoste: 'Choisir le poste…', open: 'Ouvrir', close: 'Fermer',
+  entranceQr: 'QR d’entrée', entranceQrHelp: 'À coller à l’entrée du labo. Il ouvre le plan après connexion.',
+  draft: 'BROUILLON : sécurité non vérifiée', safetySheet: 'Fiche de sécurité', notFound: 'Fiche introuvable.',
+  safetyNotice: 'Cette fiche complète les procédures du labo et ne les remplace pas.',
+  empty: 'Non renseigné', error: 'Erreur', photos: 'Photos', start: 'Début', tlc: 'CCM',
+  step_setup: 'Montage', step_start: 'Début', step_followup: 'Suivi', step_end: 'Fin', step_extraction: 'Extraction',
+  step_purification: 'Purification', step_tlc: 'CCM', step_product: 'Produit final',
+  hz_flammable: 'Inflammable', hz_explosive: 'Explosif', hz_oxidizer: 'Comburant', hz_gas: 'Gaz sous pression', hz_corrosive: 'Corrosif',
+  hz_toxic: 'Toxique aigu', hz_irritant: 'Nocif / irritant', hz_health: 'Danger pour la santé', hz_environment: 'Danger pour l’environnement',
+  c_colorless: 'Incolore', c_yellow: 'Jaune', c_orange: 'Orange', c_red: 'Rouge', c_brown: 'Brun', c_black: 'Noir', c_green: 'Vert', c_blue: 'Bleu', c_precipitate: 'Précipité',
+};
+
+const de = {
+  trTitle: 'Fotos vom Handy auf den PC senden', trIntro: 'Ohne Konto. Starte den Empfang am PC, scanne den QR-Code mit dem Handy, und die Fotos erscheinen hier. Sie werden nach 24 Stunden gelöscht.',
+  trStart: 'Empfang starten', labSpace: 'Laborbereich (Reaktionen und Reagenzien)', trRoom: 'Fotoempfang', trScan: 'Scanne diesen QR-Code mit dem Handy. Wer diesen QR-Code hat, sieht die Fotos dieser Sitzung.',
+  trGallery: 'Aus der Galerie wählen', trRetry: 'Erneut senden', trDownload: 'Herunterladen', trClose: 'Beenden und alles löschen',
+  trCloseConfirm: 'Alle Fotos dieser Sitzung endgültig löschen?', trExpiry: 'Diese Sitzung wird nach 24 Stunden automatisch gelöscht.',
+  stock: 'Reagenzien', scan: 'Etikett scannen', newReagent: 'Neues Reagenz', noReagents: 'Noch keine Reagenzien.',
+  product: 'Produkt', supplier: 'Lieferant', ref: 'Artikelnummer', lot: 'Lot / Charge', expiry: 'Verfallsdatum', location: 'Lagerort',
+  morePhoto: 'Weiteres Etikettenfoto', reading: 'Etikett wird gelesen…', readDone: 'Felder vor dem Speichern prüfen.',
+  expired: 'Abgelaufen', soon: 'Läuft bald ab', search: 'Suchen', profiles: 'Lieferantenprofile', addSupplier: 'Lieferant hinzufügen',
+  matchWords: 'Wörter, die den Lieferanten erkennen', lotKeys: 'Schlüsselwörter für Lot', refKeys: 'Schlüsselwörter für Artikelnummer', expiryKeys: 'Schlüsselwörter für Verfallsdatum',
+  keysHelp: 'Durch Kommas getrennt. Leer lassen für die üblichen Wörter (Lot, Batch, Cat. No…).',
+  learn: '«{w}» als Lot-Schlüsselwort für {s} hinzufügen?', fromStock: 'Aus dem Lager wählen…',
+  coa: 'Analysenzertifikat (CoA)', addCoa: 'CoA anhängen', openCoa: 'CoA öffnen', sendCoa: 'CoA + Lot + Artikelnummer senden', noCoa: 'Noch kein CoA.',
+  sent: 'CoA heruntergeladen. Lot und Artikelnummer kopiert: einfach einfügen.',
+  appName: 'Paillasse', reactions: 'Reaktionen', newReaction: 'Neue Reaktion', noReactions: 'Noch keine Reaktionen.',
+  status: 'Status', running: 'Läuft', done: 'Abgeschlossen', markDone: 'Als abgeschlossen markieren', markRunning: 'Wieder öffnen',
+  demo: 'Demo-Modus: Die Daten bleiben in diesem Browser.',
+  email: 'E-Mail-Adresse', password: 'Passwort (mindestens 6 Zeichen)', signUp: 'Konto erstellen', signIn: 'Anmelden', confirmSent: 'Konto erstellt. Klicke auf den Link in der E-Mail und melde dich dann hier an.', signOut: 'Abmelden',
+  notAllowed: 'Dieses Konto gehört nicht zum Team. Bitte um Freischaltung bitten.',
+  codeLabel: 'Laborjournal-Nr.', title: 'Titel', reagents: 'Reagenzien', addReagent: 'Reagenz hinzufügen',
+  reagentName: 'Produkt', reagentLot: 'Lot', reagentRef: 'Artikelnummer',
+  safety: 'Sicherheit', hazards: 'Gefahren', extinguisher: 'Löschmittel (SDB, Abschnitt 5)',
+  extinguisherHelp: 'Aus dem SDB übernehmen und prüfen lassen. Die App schlägt von sich aus keine Anweisungen vor.',
+  instructions: 'Massnahmen bei Zwischenfall', responsible: 'Verantwortlich', phone: 'Telefon', endPlanned: 'Geplantes Ende',
+  sdsLinks: 'SDB-Links (einer pro Zeile)', checkedBy: 'Sicherheit geprüft von',
+  save: 'Speichern', cancel: 'Abbrechen', edit: 'Bearbeiten', delete: 'Löschen', back: 'Zurück',
+  confirmDelete: 'Endgültig löschen?', saving: 'Wird gespeichert…',
+  photo: 'Foto', note: 'Notiz', step: 'Schritt', color: 'Farbe der Lösung', noteText: 'Bemerkung',
+  timeline: 'Verlauf', noEntries: 'Noch kein Foto. Nutze die Foto-Taste.',
+  tlcCompare: 'DC vergleichen', measureRf: 'Rf messen', tlcBase: 'Startlinie', tlcFront: 'Laufmittelfront', tlcSpot: 'Flecken',
+  tlcHelp: 'Tippe auf die Startlinie, dann auf die Front, dann auf jeden Fleck.', undo: 'Letzten entfernen',
+  report: 'PDF-Bericht', printPdf: 'Drucken / als PDF speichern', label: 'QR-Etikett', printLabel: 'Etikett drucken',
+  export: 'Nach Excel exportieren', scanQr: 'Scannen für das vollständige Blatt',
+  plan: 'Plan', planHelp: 'Tippe auf einen Platz, um die laufenden Reaktionen und SDB-Blätter zu sehen.', free: 'Frei', noRunning: 'Keine laufende Reaktion an diesem Platz.',
+  poste: 'Platz', choosePoste: 'Platz wählen…', open: 'Öffnen', close: 'Schliessen',
+  entranceQr: 'Eingangs-QR', entranceQrHelp: 'Am Laboreingang anbringen. Öffnet nach dem Login den Plan.',
+  draft: 'ENTWURF: Sicherheit nicht geprüft', safetySheet: 'Sicherheitsblatt', notFound: 'Blatt nicht gefunden.',
+  safetyNotice: 'Dieses Blatt ergänzt die Laborvorschriften und ersetzt sie nicht.',
+  empty: 'Keine Angabe', error: 'Fehler', photos: 'Fotos', start: 'Beginn', tlc: 'DC',
+  step_setup: 'Aufbau', step_start: 'Start', step_followup: 'Verlauf', step_end: 'Ende', step_extraction: 'Extraktion',
+  step_purification: 'Reinigung', step_tlc: 'DC', step_product: 'Endprodukt',
+  hz_flammable: 'Entzündbar', hz_explosive: 'Explosiv', hz_oxidizer: 'Brandfördernd', hz_gas: 'Gase unter Druck', hz_corrosive: 'Ätzend',
+  hz_toxic: 'Akut giftig', hz_irritant: 'Reizend / gesundheitsschädlich', hz_health: 'Gesundheitsgefahr', hz_environment: 'Umweltgefahr',
+  c_colorless: 'Farblos', c_yellow: 'Gelb', c_orange: 'Orange', c_red: 'Rot', c_brown: 'Braun', c_black: 'Schwarz', c_green: 'Grün', c_blue: 'Blau', c_precipitate: 'Niederschlag',
+};
+
+export const STEPS = ['setup', 'start', 'followup', 'end', 'extraction', 'purification', 'tlc', 'product'];
+export const HAZARDS = ['flammable', 'explosive', 'oxidizer', 'gas', 'corrosive', 'toxic', 'irritant', 'health', 'environment'];
+export const COLORS = ['colorless', 'yellow', 'orange', 'red', 'brown', 'black', 'green', 'blue', 'precipitate'];
+
+const saved = () => { try { return localStorage.getItem('lang'); } catch { return null; } };
+export let lang = saved() || (navigator.language.startsWith('de') ? 'de' : 'fr');
+export function setLang(l) {
+  lang = l;
+  document.documentElement.lang = l;
+  try { localStorage.setItem('lang', l); } catch { /* préférence seulement */ }
+}
+document.documentElement.lang = lang;
+
+export const t = (key) => ({ fr, de })[lang][key] ?? key;
