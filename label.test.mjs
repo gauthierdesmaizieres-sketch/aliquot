@@ -19,7 +19,7 @@ assert.equal(parseDate('Mar 2027'), '2027-03-31');
 assert.equal(parseDate('rien'), '');
 
 const a = parseText('Ambeed, Inc.\n4-Bromoanisole\nCat. No.: A123456\nLot: BD12X34\nRetest Date: 2027-06', S);
-assert.deepEqual(a, { supplier: 'Ambeed', lot: 'BD12X34', ref: 'A123456', expiry: '2027-06-30' });
+assert.deepEqual(a, { supplier: 'Ambeed', lot: 'BD12X34', ref: 'A123456', expiry: '2027-06-30', cas: '' });
 
 const b = parseText('Sigma-Aldrich\nProduct Number: 216666\nBatch Number: MKCD1234\nProduct Name: Toluene', S);
 assert.equal(b.supplier, 'Sigma-Aldrich');
@@ -30,6 +30,8 @@ const custom = [{ name: 'Acme', match: 'acme', lot_keys: 'charge', ref_keys: '',
 assert.equal(parseText('ACME GmbH Charge: 77A1 Lot: FAUX1', custom).lot, '77A1', 'le profil passe avant le générique');
 
 assert.equal(parseText('Product Name: Toluene', S).ref, '', 'une référence sans chiffre est ignorée');
+assert.equal(parseText('AB 128995 25 g\nlot 1249681\nCAS 29420-49-3', S).cas, '29420-49-3', 'CAS lu par son format');
+assert.equal(parseText('lot 1249681 FW 338.19', S).cas, '', 'pas de CAS sans tiret au bon format');
 assert.equal(findSupplier('Fatci reagent', S), null, 'tci seulement en mot entier');
 assert.equal(findSupplier('TCI Europe', S).name, 'TCI');
 

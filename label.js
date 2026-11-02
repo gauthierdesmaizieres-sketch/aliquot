@@ -105,6 +105,7 @@ export function parseText(text, suppliers) {
     lot: afterKey(text, keys(profile, 'lot_keys'), hasDigit),
     ref: afterKey(text, keys(profile, 'ref_keys'), hasDigit),
     expiry: expiryAfterKey(text, keys(profile, 'expiry_keys')),
+    cas: text.match(/\b\d{2,7}-\d{2}-\d\b/)?.[0] ?? '', // format fixe, pas besoin de profil
   };
 }
 

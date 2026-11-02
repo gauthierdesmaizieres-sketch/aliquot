@@ -97,3 +97,4 @@ create policy team_photos on storage.objects for all to authenticated
 
 -- Base déjà créée ? Ajouter le poste de paillasse (plan du labo) :
 alter table public.reactions add column if not exists poste text not null default '';
+alter table public.reagents add column if not exists cas text not null default '';

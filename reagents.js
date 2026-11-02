@@ -28,7 +28,7 @@ async function readText(blob) {
 }
 
 function fillEmpty(r, found, inputs) {
-  for (const k of ['supplier', 'ref', 'lot', 'expiry']) {
+  for (const k of ['supplier', 'ref', 'lot', 'expiry', 'cas']) {
     if (found[k] && !r[k]) {
       r[k] = found[k];
       inputs[k].value = found[k];
@@ -41,7 +41,7 @@ export async function reagentListView() {
   const results = h('div', {});
   const draw = (q = '') => {
     const needle = q.toLowerCase();
-    const shown = rows.filter((r) => [r.product, r.supplier, r.ref, r.lot].join(' ').toLowerCase().includes(needle));
+    const shown = rows.filter((r) => [r.product, r.supplier, r.ref, r.lot, r.cas].join(' ').toLowerCase().includes(needle));
     results.replaceChildren(...(shown.length ? shown.map(card) : [h('p', { class: 'muted' }, t('noReagents'))]));
   };
   const card = (r) => {
@@ -64,7 +64,7 @@ export async function reagentListView() {
 
 function exportReagents(rows) {
   const data = rows.map((r) => ({
-    [t('product')]: r.product, [t('supplier')]: r.supplier, [t('ref')]: r.ref, [t('lot')]: r.lot,
+    [t('product')]: r.product, [t('supplier')]: r.supplier, [t('ref')]: r.ref, [t('reagentCas')]: r.cas, [t('lot')]: r.lot,
     [t('expiry')]: r.expiry ? day(r.expiry) : '', [t('location')]: r.location, [t('noteText')]: r.note, CoA: r.coa_path ? '✓' : '',
   }));
   const wb = XLSX.utils.book_new();
@@ -73,7 +73,7 @@ function exportReagents(rows) {
 }
 
 export async function reagentFormView(existing) {
-  const r = existing ?? { product: '', supplier: '', ref: '', lot: '', expiry: null, location: '', note: '', photos: [], coa_path: null };
+  const r = existing ?? { product: '', supplier: '', ref: '', cas: '', lot: '', expiry: null, location: '', note: '', photos: [], coa_path: null };
   const profiles = await suppliers();
   const stock = await store.list('reagents');
   const pending = [];
@@ -145,6 +145,7 @@ export async function reagentFormView(existing) {
       field(t('supplier'), input('supplier', { list: 'supplier-list' })),
       h('datalist', { id: 'supplier-list' }, profiles.map((p) => h('option', { value: p.name }))),
       field(t('ref'), input('ref')),
+      field(t('reagentCas'), input('cas')),
       field(t('lot'), input('lot')),
       field(t('expiry'), input('expiry', { type: 'date' })),
       field(t('location'), input('location')),
@@ -190,7 +191,7 @@ export async function reagentDetailView(id) {
     h('main', {},
       h('h1', {}, r.product || r.ref || '—'),
       state && h('div', { class: 'actions' }, h('span', { class: `pill ${state}` }, t(state))),
-      row(t('supplier'), r.supplier), row(t('ref'), r.ref), row(t('lot'), r.lot),
+      row(t('supplier'), r.supplier), row(t('ref'), r.ref), row(t('reagentCas'), r.cas), row(t('lot'), r.lot),
       row(t('expiry'), r.expiry && day(r.expiry)), row(t('location'), r.location), row(t('noteText'), r.note),
       r.photos.length > 0 && h('div', { class: 'thumbs' }, r.photos.map(photoImg)),
       h('h2', {}, t('coa')),
