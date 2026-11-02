@@ -12,7 +12,7 @@ function planSvg(running) {
   const postes = POSTES.map((p) => {
     const label = p.label.length > 9 ? 15 : 17;
     if (!p.slots) {
-      return `<rect class="card" x="${p.x}" y="${p.y}" width="${W}" height="${H}" rx="17"/>`
+      return `<rect class="slot" x="${p.x}" y="${p.y}" width="${W}" height="${H}" rx="17"/>`
         + `<text class="t-off" x="${p.x + W / 2}" y="${p.y + 23}" font-size="${label}">${p.label}</text>`;
     }
     const busy = (running[p.id] ?? []).length > 0;

@@ -98,7 +98,7 @@ input, textarea { width: 100%; min-height: 48px; padding: 10px 12px; border: 1px
 .plan-wrap { width: 100%; }
 .plan { display: block; width: 100%; height: auto; }
 .plan .zone { fill: #EEF2F6; }
-.plan .card { fill: #FFFFFF; stroke: #D7DEE6; stroke-width: 1; }
+.plan .slot { fill: #FFFFFF; stroke: #D7DEE6; stroke-width: 1; }
 .plan .acc { fill: #2A9D8F; }
 .plan text { font-family: Arial, Helvetica, sans-serif; text-anchor: middle; }
 .plan .t-off { fill: #94A3B8; }
