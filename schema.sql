@@ -98,3 +98,10 @@ create policy team_photos on storage.objects for all to authenticated
 -- Base déjà créée ? Ajouter le poste de paillasse (plan du labo) :
 alter table public.reactions add column if not exists poste text not null default '';
 alter table public.reagents add column if not exists cas text not null default '';
+
+-- Liste des responsables possibles (la table team n'est pas lisible directement).
+create or replace function public.team_members() returns setof text
+language sql stable security definer set search_path = ''
+as $$ select email from public.team where public.is_team() order by email $$;
+revoke execute on function public.team_members() from public, anon;
+grant execute on function public.team_members() to authenticated;

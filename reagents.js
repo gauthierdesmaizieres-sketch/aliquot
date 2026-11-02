@@ -27,8 +27,26 @@ async function readText(blob) {
   return (await (await ocr).recognize(blob)).data.text;
 }
 
+// Lecture par IA de vision, côté serveur (connexion d'équipe obligatoire) ; repli sur l'OCR si elle échoue.
+async function visionRead(blob) {
+  const token = await store.accessToken();
+  if (!token) throw new Error('connexion requise pour la lecture IA');
+  const image = await new Promise((res) => {
+    const reader = new FileReader();
+    reader.onload = () => res(reader.result.split(',')[1]);
+    reader.readAsDataURL(blob);
+  });
+  const res = await fetch('/.netlify/functions/read-label', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ image }),
+  });
+  if (!res.ok) throw new Error(`lecture IA : ${await res.text()}`);
+  return res.json();
+}
+
 function fillEmpty(r, found, inputs) {
-  for (const k of ['supplier', 'ref', 'lot', 'expiry', 'cas']) {
+  for (const k of ['product', 'supplier', 'ref', 'lot', 'expiry', 'cas']) {
     if (found[k] && !r[k]) {
       r[k] = found[k];
       inputs[k].value = found[k];
@@ -93,9 +111,14 @@ export async function reagentFormView(existing) {
     try {
       const code = await readCode(file);
       if (code) fillEmpty(r, code, inputs);
-      lastText = await readText(blob);
-      const text = parseText(lastText, profiles);
-      fillEmpty(r, text, inputs);
+      const ai = await visionRead(blob).catch((e) => { fail(e); return null; });
+      if (ai) {
+        fillEmpty(r, ai, inputs);
+        lastText = ''; // pas de texte OCR : l'apprentissage du fournisseur ne s'applique pas
+      } else {
+        lastText = await readText(blob);
+        fillEmpty(r, parseText(lastText, profiles), inputs);
+      }
       readLot = r.lot;
       const known = stock.find((x) => x.ref && x.ref === r.ref && x.product);
       if (known && !r.product) { r.product = known.product; inputs.product.value = known.product; }

@@ -81,7 +81,7 @@ function exportExcel(reactions, entries) {
   XLSX.writeFile(wb, `reactions-${new Date().toISOString().slice(0, 10)}.xlsx`);
 }
 
-function formView(r, stock) {
+function formView(r, stock, team) {
   const input = (key, props = {}) => h('input', { value: r[key] ?? '', onInput: (e) => { r[key] = e.target.value; }, ...props });
   const area = (key) => h('textarea', { rows: 3, value: r[key] ?? '', onInput: (e) => { r[key] = e.target.value; } });
   const list = h('div', { class: 'stack' });
@@ -129,7 +129,9 @@ function formView(r, stock) {
       h('div', { class: 'field' }, h('span', {}, t('hazards')), hazards),
       field(t('extinguisher'), input('extinguisher'), t('extinguisherHelp')),
       field(t('instructions'), area('instructions')),
-      field(t('responsible'), input('responsible')),
+      field(t('responsible'), h('select', { onChange: (e) => { r.responsible = e.target.value; } },
+        h('option', { value: '' }, t('choosePerson')),
+        [...new Set([...team, r.responsible].filter(Boolean))].map((m) => h('option', { value: m, selected: r.responsible === m }, m)))),
       field(t('phone'), input('phone', { type: 'tel' })),
       field(t('endPlanned'), input('end_planned', { type: 'date' })),
       field(t('sdsLinks'), area('sds_links')),
@@ -312,8 +314,8 @@ async function route() {
     const user = await store.session();
     if (!user) return loginView();
     if (!user.allowed) return app.replaceChildren(h('main', { class: 'login' }, h('p', {}, t('notAllowed')), button(t('signOut'), () => store.signOut().then(route), 'btn')));
-    if (page === 'new') return formView(newReaction(), await store.list('reagents'));
-    if (page === 'edit') return formView(await store.getReaction(arg), await store.list('reagents'));
+    if (page === 'new') return formView(newReaction(), await store.list('reagents'), await store.teamMembers());
+    if (page === 'edit') return formView(await store.getReaction(arg), await store.list('reagents'), await store.teamMembers());
     if (page === 'stock') return await reagentListView();
     if (page === 'reagent') return arg === 'new' ? await reagentFormView() : await reagentDetailView(arg);
     if (page === 'reagent-edit') return await reagentFormView(await store.get('reagents', arg));

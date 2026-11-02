@@ -25,6 +25,8 @@ function supabaseStore() {
       ok(await db.auth.signUp({ email, password, options: { emailRedirectTo: location.origin + location.pathname } }));
     },
     async signOut() { await db.auth.signOut(); },
+    async accessToken() { return (await db.auth.getSession()).data.session?.access_token ?? null; },
+    async teamMembers() { return ok(await db.rpc('team_members')); },
     async listReactions() { return ok(await db.from('reactions').select().order('created_at', { ascending: false })); },
     async getReaction(id) { return ok(await db.from('reactions').select().eq('id', id).single()); },
     async saveReaction(r) { return ok(await db.from('reactions').upsert(r).select().single()); },
@@ -104,6 +106,8 @@ function demoStore() {
   return {
     async session() { return { email: 'demo', allowed: true }; },
     async signOut() {},
+    async accessToken() { return null; },
+    async teamMembers() { return []; },
     async listReactions() { return (await all('reactions')).sort((a, b) => b.created_at.localeCompare(a.created_at)); },
     async getReaction(rid) { return run('reactions', 'readonly', (o) => o.get(rid)); },
     async saveReaction(r) {
