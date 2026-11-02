@@ -1,4 +1,4 @@
-// Lit une photo d'étiquette de réactif avec un modèle de vision. La clé Anthropic reste sur Netlify (variable ANTHROPIC_API_KEY).
+// Lit une photo d'étiquette de réactif avec un modèle de vision Gemini. La clé reste sur Netlify (variable GEMINI_API_KEY).
 const SUPABASE_URL = 'https://dbdqshfopagbylpwqfel.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_c4hatIVl5gX3uPrlFZTTgA_hVOcRkyf'; // publique, comme config.js
 
@@ -9,6 +9,7 @@ cas (numéro CAS au format 12345-67-8), lot (numéro de lot ou de batch), expiry
 Mets une chaîne vide pour tout champ illisible ou absent. Ne devine jamais : un numéro incertain reste vide.`;
 
 const FIELDS = ['product', 'supplier', 'ref', 'cas', 'lot', 'expiry'];
+const MODEL = 'gemini-2.5-flash';
 
 export default async (req) => {
   if (req.method !== 'POST') return new Response('méthode refusée', { status: 405 });
@@ -23,24 +24,17 @@ export default async (req) => {
   if (!team.ok || (await team.json()) !== true) return new Response('non autorisé', { status: 403 });
 
   const { image } = await req.json();
-  const ai = await fetch('https://api.anthropic.com/v1/messages', {
+  const ai = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
     method: 'POST',
-    headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+    headers: { 'x-goog-api-key': process.env.GEMINI_API_KEY, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'claude-sonnet-5-5',
-      max_tokens: 400,
-      messages: [{
-        role: 'user',
-        content: [
-          { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: image } },
-          { type: 'text', text: PROMPT },
-        ],
-      }],
+      contents: [{ parts: [{ inline_data: { mime_type: 'image/jpeg', data: image } }, { text: PROMPT }] }],
+      generationConfig: { responseMimeType: 'application/json' },
     }),
   });
   if (!ai.ok) return new Response(`IA indisponible (${ai.status})`, { status: 502 });
 
-  const text = (await ai.json()).content?.find((c) => c.type === 'text')?.text ?? '';
+  const text = (await ai.json()).candidates?.[0]?.content?.parts?.[0]?.text ?? '';
   const match = text.match(/\{[\s\S]*\}/);
   if (!match) return new Response('réponse illisible', { status: 502 });
   const parsed = JSON.parse(match[0]);
