@@ -100,9 +100,13 @@ input, textarea { width: 100%; min-height: 48px; padding: 10px 12px; border: 1px
 .plan .zone { fill: #EEF2F6; }
 .plan .slot { fill: #FFFFFF; stroke: #D7DEE6; stroke-width: 1; }
 .plan .acc { fill: #2A9D8F; }
-.plan text { font-family: Arial, Helvetica, sans-serif; text-anchor: middle; }
-.plan .t-off { fill: #94A3B8; }
+.plan text { font-family: Arial, Helvetica, sans-serif; text-anchor: middle; font-size: 15px; }
+.plan .t-off { fill: #334155; }
 .plan .t-acc { fill: #FFFFFF; font-weight: 700; }
+.plan .n { font-size: 11px; fill: #94A3B8; }
+.plan .t-acc.n { fill: #E0F2F1; font-weight: 400; }
+.plan .off { fill: #F8FAFC; stroke: #E2E8F0; stroke-width: 1; }
+.plan .z { text-anchor: start; font-size: 14px; font-weight: 700; fill: #475569; }
 .plan .legend { fill: #334155; font-size: 15px; text-anchor: start; }
 .plan .poste { cursor: pointer; }
 .plan .poste:focus-visible rect { stroke: #0F172A; stroke-width: 3; }

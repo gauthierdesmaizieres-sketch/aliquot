@@ -8,23 +8,29 @@ const IDLE = 'style="--liquid: #CBD5E1"';
 const flask = (x, y, running) => `<use href="#flask" x="${x}" y="${y}" width="20" height="26" ${running ? RUNNING : IDLE}/>`;
 
 function planSvg(running) {
-  const zones = ZONES.map((z) => `<rect class="zone" x="${z.x}" y="${z.y}" width="473" height="85" rx="14"/>`).join('');
+  const zones = ZONES.map((z) => `<rect class="zone" x="${z.x}" y="${z.y}" width="${z.w}" height="${z.h}" rx="14"/>`
+    + `<text class="z" x="${z.x + 12}" y="${z.y + 22}">${z.title}</text>`).join('');
   const postes = POSTES.map((p) => {
-    const label = p.label.length > 9 ? 15 : 17;
-    if (!p.slots) {
-      return `<rect class="slot" x="${p.x}" y="${p.y}" width="${W}" height="${H}" rx="17"/>`
-        + `<text class="t-off" x="${p.x + W / 2}" y="${p.y + 23}" font-size="${label}">${p.label}</text>`;
+    if (p.slots) {
+      const busy = (running[p.id] ?? []).length > 0;
+      return `<g class="poste" data-poste="${p.id}">`
+        + `<rect class="acc" x="${p.x}" y="${p.y}" width="${W}" height="${H}" rx="10"/>`
+        + `<text class="t-acc" x="${p.x + W / 2 - 8}" y="${p.y + 26}">${p.label}</text>`
+        + `<text class="t-acc n" x="${p.x + W / 2}" y="${p.y + H - 8}">${p.num}</text>`
+        + flask(p.x + W - 24, p.y + 4, busy)
+        + '</g>';
     }
-    const busy = (running[p.id] ?? []).length > 0;
-    return `<g class="poste" data-poste="${p.id}">`
-      + `<rect class="acc" x="${p.x}" y="${p.y}" width="${W}" height="${H}" rx="17"/>`
-      + `<text class="t-acc" x="${p.x + W / 2 - 12}" y="${p.y + 23}" font-size="${label}">${p.label}</text>`
-      + flask(p.x + 100, p.y + 4, busy)
-      + '</g>';
+    if (!p.label) {
+      return `<rect class="off" x="${p.x}" y="${p.y}" width="${W}" height="${H}" rx="10"/>`
+        + `<text class="n" x="${p.x + W / 2}" y="${p.y + H / 2 + 4}">${p.num}</text>`;
+    }
+    return `<rect class="slot" x="${p.x}" y="${p.y}" width="${W}" height="${H}" rx="10"/>`
+      + `<text class="t-off" x="${p.x + W / 2}" y="${p.y + 26}">${p.label}</text>`
+      + `<text class="n" x="${p.x + W / 2}" y="${p.y + H - 8}">${p.num}</text>`;
   }).join('');
-  const legend = flask(620, 640, true) + `<text class="legend" x="648" y="658">${t('running')}</text>`
-    + flask(740, 640, false) + `<text class="legend" x="768" y="658">${t('free')}</text>`;
-  return `<svg class="plan" viewBox="340 75 720 630" role="img" aria-label="${t('plan')}">`
+  const legend = flask(20, 600, true) + `<text class="legend" x="48" y="618">${t('running')}</text>`
+    + flask(160, 600, false) + `<text class="legend" x="188" y="618">${t('free')}</text>`;
+  return `<svg class="plan" viewBox="0 0 1000 630" role="img" aria-label="${t('plan')}">`
     + `<defs><symbol id="flask" viewBox="0 0 60 76">`
     + '<rect x="22" y="2" width="16" height="26" rx="3" fill="#F8FAFC" stroke="#94A3B8" stroke-width="2"/>'
     + '<circle cx="30" cy="52" r="24" fill="#F8FAFC" stroke="#94A3B8" stroke-width="2"/>'

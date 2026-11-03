@@ -2,8 +2,13 @@
 import assert from 'node:assert/strict';
 import { reactionPostes, posteLabel, runningByPoste } from './plan-data.js';
 
-assert.deepEqual(reactionPostes().map((p) => p.id), ['alle', 'wej', 'bafm', 'mya', 'nal', 'deg', 'lehrlinge']);
+assert.deepEqual(reactionPostes().map((p) => p.id), [
+  'crm-028', 'crm-029', 'crm-030', 'crm-031', 'crm-032', 'crm-033', 'mel-035', 'mel-036',
+  'lehrlinge', 'mya', 'nal', 'deg', 'bafm', 'wej', 'alle',
+]);
 assert.equal(posteLabel('mya'), 'Mya');
+assert.equal(posteLabel('mel-035'), 'MEL 035');
+assert.equal(posteLabel('hotte-037'), '', 'hotte sans nom : pas de libellé');
 assert.equal(posteLabel(''), '');
 
 const r = (id, poste, status) => ({ id, poste, status });
