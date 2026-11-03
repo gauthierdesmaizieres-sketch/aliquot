@@ -1,16 +1,17 @@
 // Plan de dessus de l'étage (niveau 03). Sans import : testable avec node.
 // Hottes = KAP-XXX du plan, nommées par leur Kürzel. Les hottes sans nom restent grises.
-export const W = 84;
+export const W = 80;
 export const H = 58;
 
+// Même sens que le plan : zones de gauche à droite, en haut puis en bas ; hottes en colonnes verticales.
 export const ZONES = [
   { title: 'Synthèse Pestizide', x: 20, y: 50, w: 380, h: 190 },
-  { title: 'Eingang', x: 410, y: 50, w: 120, h: 190 },
-  { title: 'Chemikalien', x: 540, y: 50, w: 100, h: 190 },
-  { title: 'MEL 3/4 Lab', x: 650, y: 50, w: 330, h: 190 },
-  { title: 'Purification', x: 20, y: 270, w: 260, h: 300 },
-  { title: 'Synthèse Pharma Impurities', x: 300, y: 270, w: 320, h: 200 },
-  { title: 'Geräte - Ersatz', x: 640, y: 270, w: 340, h: 200 },
+  { title: 'Eingang', x: 410, y: 50, w: 110, h: 190 },
+  { title: 'Chemikalien', x: 530, y: 50, w: 100, h: 190 },
+  { title: 'MEL 3/4 Lab', x: 640, y: 50, w: 340, h: 190 },
+  { title: 'Purification', x: 20, y: 270, w: 270, h: 310 },
+  { title: 'Synthèse Pharma Impurities', x: 300, y: 270, w: 330, h: 310 },
+  { title: 'Geräte - Ersatz', x: 640, y: 270, w: 340, h: 310 },
 ];
 
 // Nom affiché et poste de réaction (id) par numéro de hotte.
@@ -47,18 +48,18 @@ const HOODS = {
   '062': { label: 'Probe' },
 };
 
-// Positions (x, y) : grilles par zone, comme sur le plan de dessus.
-const grid = (nums, x0, y0, cols, dx, dy) => nums.map((num, i) => ({
-  num, x: x0 + (i % cols) * dx, y: y0 + Math.floor(i / cols) * dy,
-}));
+// Colonnes verticales : les hottes d'une colonne sont empilées de haut en bas, comme sur le plan.
+const column = (nums, x, y0, dy = 68) => nums.map((num, i) => ({ num, x, y: y0 + i * dy }));
 
 const LAYOUT = [
-  ...grid(['026', '027', '028', '029', '030', '031', '032', '033'], 36, 80, 4, 90, 74),
-  ...grid(['034'], 428, 110, 1, 0, 0),
-  ...grid(['035', '036', '037', '038', '039', '040'], 668, 80, 3, 104, 74),
-  ...grid(['041', '042', '043', '044', '045', '046', '047'], 36, 300, 2, 118, 66),
-  ...grid(['048', '049', '050', '051', '052', '053'], 318, 300, 3, 100, 80),
-  ...grid(['054', '055', '056', '057', '058', '059', '060', '061', '062'], 658, 300, 3, 104, 66),
+  ...column(['026', '027'], 36, 110), ...column(['028', '029'], 126, 110),
+  ...column(['030', '031'], 216, 110), ...column(['032', '033'], 306, 110),
+  ...column(['034'], 428, 110),
+  ...column(['035', '036'], 660, 110), ...column(['037', '038'], 760, 110), ...column(['039', '040'], 860, 110),
+  ...column(['041', '042', '043'], 36, 310), ...column(['044', '045', '046', '047'], 126, 310),
+  ...column(['048', '049', '050'], 320, 310), ...column(['051', '052', '053'], 410, 310),
+  ...column(['054', '055', '056'], 500, 310),
+  ...column(['057', '058'], 660, 310), ...column(['059', '060'], 750, 310), ...column(['061', '062'], 840, 310),
 ];
 
 // Liste complète des postes à dessiner (hottes sans nom incluses, sans poste).
