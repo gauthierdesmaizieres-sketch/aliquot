@@ -6,7 +6,7 @@ cas (numéro CAS au format 12345-67-8), lot (numéro de lot ou de batch), expiry
 Mets une chaîne vide pour tout champ illisible ou absent. Ne devine jamais : un numéro incertain reste vide.`;
 
 const FIELDS = ['product', 'supplier', 'ref', 'cas', 'lot', 'expiry'];
-const MODEL = 'gemini-2.5-flash';
+const MODEL = 'gemini-3.6-flash';
 const CORS = {
   'Access-Control-Allow-Origin': '*', // la connexion d'équipe est vérifiée ci-dessous, pas l'origine
   'Access-Control-Allow-Headers': 'authorization, apikey, content-type',
