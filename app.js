@@ -233,6 +233,13 @@ async function detailView(id) {
       if (file) entrySheet(reaction, await shrink(file), lastStep, reload);
     },
   });
+  // Ctrl+V : une capture d'écran collée devient une note de la réaction ; l'écouteur s'arrête quand on quitte la page.
+  const paste = async (e) => {
+    if (!camera.isConnected) return document.removeEventListener('paste', paste);
+    const item = [...(e.clipboardData?.items ?? [])].find((i) => i.type.startsWith('image/'));
+    if (item) entrySheet(reaction, await shrink(item.getAsFile()), lastStep, reload);
+  };
+  document.addEventListener('paste', paste);
   const toggle = () => store.saveReaction({ ...reaction, status: reaction.status === 'running' ? 'done' : 'running' }).then(reload).catch(fail);
   app.replaceChildren(
     topbar(link('#/labo', `‹ ${t('reactions')}`, 'btn ghost'), link(`#/edit/${id}`, t('edit'), 'btn ghost')),
