@@ -17,20 +17,20 @@ function label(p, cls) {
 }
 
 function planSvg(running) {
-  const zones = ZONES.map((z) => `<rect class="zone" x="${z.x + 3}" y="${z.y}" width="${z.w - 6}" height="${z.h}" rx="12"/>`
-    + `<text class="z" x="${z.x + 14}" y="${z.y + 21}">${z.title}</text>`).join('');
+  const zones = ZONES.map((z) => `<rect class="zone tone-${z.tone}" x="${z.x + 3}" y="${z.y}" width="${z.w - 6}" height="${z.h}" rx="12"/>`
+    + `<text class="z tone-${z.tone}" x="${z.x + 14}" y="${z.y + 21}">${z.title}</text>`).join('');
   const aisles = AISLE_BOXES.map((a) => `<rect class="aisle" x="${a.x}" y="${a.y}" width="${a.w}" height="${a.h}"/>`).join('');
   const postes = POSTES.map((p) => {
     const rect = (cls) => `<rect class="${cls}" x="${p.x + 2}" y="${p.y + 1}" width="${p.w - 4}" height="${p.h - 2}" rx="8"/>`;
     const num = (cls) => `<text class="${cls}" x="${p.x + p.w - 8}" y="${p.y + p.h - 7}">${p.num}</text>`;
     if (p.slots) {
       const busy = (running[p.id] ?? []).length > 0;
-      return `<g class="poste" data-poste="${p.id}">`
+      return `<g class="poste tone-${p.tone}" data-poste="${p.id}">`
         + rect('acc') + label(p, 't-acc') + num('t-acc n') + flask(p.x + 6, p.y + p.h - 30, busy)
         + '</g>';
     }
-    if (!p.label) return rect('off') + num('n');
-    return rect('slot') + label(p, 't-off') + num('n');
+    const body = p.label ? rect('slot') + label(p, 't-off') : rect('off');
+    return `<g class="tone-${p.tone}">${body}${num('n')}</g>`;
   }).join('');
   const ly = VIEW.h - 30;
   const legend = flask(20, ly, true) + `<text class="legend" x="48" y="${ly + 18}">${t('running')}</text>`

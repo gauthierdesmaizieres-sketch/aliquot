@@ -25,11 +25,12 @@ const RECTS = {
 
 const TOP = [255, 548];
 const BOTTOM = [595, 1058];
+// [titre, x gauche, x droite, rangée, couleur]. R&D = les deux salles du bas à droite, même couleur.
 const ZONE_RECTS = [
-  ['Synthese Pestizide', 400, 908, TOP], ['Eingang / Lager / PSA', 908, 1077, TOP],
-  ['Chemikalien', 1077, 1418, TOP], ['MEL 3/4 Lab', 1418, 1756, TOP],
-  ['Purification', 910, 1160, BOTTOM], ['Synthese Pharma Impurities', 1160, 1505, BOTTOM],
-  ['Geräte - Ersatz', 1505, 1756, BOTTOM],
+  ['CRM', 400, 908, TOP, 'teal'], ['Eingang / Lager / PSA', 908, 1077, TOP, 'gray'],
+  ['Chemikalien', 1077, 1418, TOP, 'blue'], ['MEL 3/4 Lab', 1418, 1756, TOP, 'purple'],
+  ['Purification', 910, 1160, BOTTOM, 'amber'], ['R&D', 1160, 1505, BOTTOM, 'red'],
+  ['', 1505, 1756, BOTTOM, 'red'],
 ];
 // Couloirs entre les rangées de hottes : [x gauche, x droite, rangée].
 const AISLES = [
@@ -56,7 +57,12 @@ export const VIEW = { w: 1480, h: 790 };
 const MIN_H = 52; // petites hottes (TASP 120) agrandies pour lire leur nom
 const box = (x0, x1, y0, y1) => ({ x: X(x0), y: Y(y0), w: X(x1) - X(x0), h: Y(y1) - Y(y0) });
 
-export const ZONES = ZONE_RECTS.map(([title, x0, x1, [y0, y1]]) => ({ title, ...box(x0, x1, y0, y1) }));
+export const ZONES = ZONE_RECTS.map(([title, x0, x1, [y0, y1], tone]) => ({ title, tone, ...box(x0, x1, y0, y1) }));
+// Couleur de la zone où se trouve le centre de la hotte.
+const toneAt = ([x0, x1, y0, y1]) => {
+  const [cx, cy] = [(x0 + x1) / 2, (y0 + y1) / 2];
+  return ZONE_RECTS.find(([, a, b, [c, d]]) => cx >= a && cx <= b && cy >= c && cy <= d)?.[4] ?? 'gray';
+};
 export const AISLE_BOXES = [
   ...AISLES.map(([x0, x1, [y0, y1]]) => box(x0, x1, y0 + 30, y1 - 6)),
   box(...HALL),
@@ -100,7 +106,7 @@ const HOODS = {
 export const POSTES = Object.keys(RECTS).sort().map((num) => {
   const hood = HOODS[num] ?? {};
   const b = box(...RECTS[num]);
-  return { id: hood.poste ?? `hotte-${num}`, num, label: hood.label ?? '', ...b, h: Math.max(b.h, MIN_H), slots: hood.slots };
+  return { id: hood.poste ?? `hotte-${num}`, num, label: hood.label ?? '', tone: toneAt(RECTS[num]), ...b, h: Math.max(b.h, MIN_H), slots: hood.slots };
 });
 
 // Postes de réaction : ballon sur la paillasse, réactions possibles.

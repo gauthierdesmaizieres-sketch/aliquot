@@ -11,6 +11,10 @@ for (const p of POSTES) {
   assert.ok(p.x >= 0 && p.x + p.w <= VIEW.w && p.y + p.h <= VIEW.h - 40, `hotte ${p.num} dans le cadre`);
   assert.ok(p.w >= 60, `hotte ${p.num} assez large pour son nom`);
 }
+assert.equal(at('028').tone, 'teal', 'CRM');
+assert.equal(at('057').tone, 'red', 'R&D Pharma');
+assert.equal(at('061').tone, 'red', 'R&D Geräte');
+assert.equal(at('041').tone, 'amber', 'Purification');
 assert.equal(X(395), 10);
 assert.equal(X(2000), 1472);
 
