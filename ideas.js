@@ -15,6 +15,9 @@ const IDEAS = [
   ['done', {
     fr: ['Mentions H : sources européennes en priorité', 'PubChem : classification CLP (ECHA) seulement, mentions déclarées par au moins 25 % des fournisseurs. Les fiches Sigma-Aldrich ne sont pas lisibles automatiquement (accès bloqué).'],
     de: ['H-Sätze: europäische Quellen zuerst', 'PubChem: nur CLP-Einstufung (ECHA), H-Sätze, die mindestens 25 % der Lieferanten melden. Sigma-Aldrich-Datenblätter sind nicht automatisch lesbar (Zugriff gesperrt).'] }],
+  ['done', {
+    fr: ['Lien vers Kobalt', 'Bouton Kobalt dans la barre d’onglets. La fiche du QR ne s’affiche plus une fois la réaction terminée.'],
+    de: ['Link zu Kobalt', 'Kobalt-Schaltfläche in der Registerleiste. Das QR-Blatt wird nach Abschluss der Reaktion nicht mehr angezeigt.'] }],
   ['v2', {
     fr: ['Banque de données interne (QC Portal)', 'Relier l’app à la base interne du QC Portal, si l’IT donne son accord.'],
     de: ['Interne Datenbank (QC Portal)', 'Die App mit der internen Datenbank des QC Portal verbinden, falls die IT zustimmt.'] }],

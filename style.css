@@ -46,6 +46,8 @@ main.with-fab { padding-bottom: 120px; }
 .tab { flex: 1; padding: 10px; text-align: center; border-radius: 10px; color: var(--muted); font-weight: 600; text-decoration: none; }
 .tab.on { background: var(--tab-on); color: var(--accent); box-shadow: 0 1px 4px rgba(15, 60, 80, .12); }
 .tab.home { flex: 0 0 48px; font-size: 1.2rem; }
+.tab.kobalt { flex: 0 0 auto; display: flex; align-items: center; gap: 6px; }
+.tab.kobalt img { width: 22px; height: 22px; border-radius: 5px; }
 .theme { min-width: 44px; padding: 0 10px; font-size: 1.2rem; }
 .pill.expired { background: var(--danger); border-color: var(--danger); color: #fff; }
 .pill.soon { background: var(--warn-bg); color: var(--warn-ink); }

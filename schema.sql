@@ -103,7 +103,7 @@ returns table (code text, hazards jsonb, extinguisher text, instructions text, r
                night jsonb, phone text, end_planned date, sds_links text, checked_by text)
 language sql stable security definer set search_path = ''
 as $$ select code, hazards, extinguisher, instructions, responsible, responsible2, night, phone, end_planned, sds_links, checked_by
-      from public.reactions where qr_token = t $$;
+      from public.reactions where qr_token = t and status = 'running' $$;
 revoke execute on function public.public_safety(uuid) from public;
 grant execute on function public.public_safety(uuid) to anon, authenticated;
 

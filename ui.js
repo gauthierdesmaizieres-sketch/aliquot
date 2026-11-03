@@ -106,5 +106,7 @@ export function tabs(active) {
     link('#/labo', t('reactions'), `tab ${active === 'reactions' ? 'on' : ''}`),
     link('#/plan', t('plan'), `tab ${active === 'plan' ? 'on' : ''}`),
     link('#/stock', t('stock'), `tab ${active === 'stock' ? 'on' : ''}`),
-    link('#/ideas', t('ideas'), `tab ${active === 'ideas' ? 'on' : ''}`));
+    link('#/ideas', t('ideas'), `tab ${active === 'ideas' ? 'on' : ''}`),
+    h('a', { href: 'https://gauthierdesmaizieres-sketch.github.io/Kobalt/', target: '_blank', rel: 'noopener', class: 'tab kobalt', title: 'Kobalt' },
+      h('img', { src: 'kobalt.png', alt: '' }), 'Kobalt'));
 }

@@ -160,7 +160,7 @@ function demoStore() {
       return urls.get(path);
     },
     async safety(token) {
-      const r = (await all('reactions')).find((x) => x.qr_token === token);
+      const r = (await all('reactions')).find((x) => x.qr_token === token && x.status === 'running');
       return r ? Object.fromEntries(SAFETY_FIELDS.map((k) => [k, r[k]])) : null;
     },
   };
