@@ -1,6 +1,18 @@
 // node plan.test.mjs
 import assert from 'node:assert/strict';
-import { reactionPostes, posteLabel, runningByPoste } from './plan-data.js';
+import { reactionPostes, posteLabel, runningByPoste, POSTES, VIEW, X } from './plan-data.js';
+
+const at = (num) => POSTES.find((p) => p.num === num);
+// Geräte - Ersatz, comme sur le plan : 060 > 061 > 062 de haut en bas, dans la colonne la plus à droite du bas.
+assert.equal(at('060').x, at('061').x);
+assert.ok(at('060').y < at('061').y && at('061').y < at('062').y);
+assert.ok(at('060').x > at('057').x + at('057').w, 'couloir entre 057 et 060');
+for (const p of POSTES) {
+  assert.ok(p.x >= 0 && p.x + p.w <= VIEW.w && p.y + p.h <= VIEW.h - 40, `hotte ${p.num} dans le cadre`);
+  assert.ok(p.w >= 60, `hotte ${p.num} assez large pour son nom`);
+}
+assert.equal(X(395), 10);
+assert.equal(X(2000), 1472);
 
 assert.deepEqual(reactionPostes().map((p) => p.id), [
   'crm-028', 'crm-029', 'crm-030', 'crm-031', 'crm-032', 'crm-033', 'mel-035', 'mel-036',

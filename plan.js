@@ -1,39 +1,42 @@
 import { t } from './i18n.js';
 import { store } from './store.js';
 import { app, h, link, button, safeHttp, sheet, topbar, langSwitch, tabs, ghsChips } from './ui.js';
-import { POSTES, ZONES, W, H, runningByPoste } from './plan-data.js';
+import { POSTES, ZONES, AISLE_BOXES, VIEW, runningByPoste } from './plan-data.js';
 
 const RUNNING = 'style="--liquid: #2F80ED; --anim: bob 1.8s ease-in-out infinite"';
 const IDLE = 'style="--liquid: #CBD5E1"';
 const flask = (x, y, running) => `<use href="#flask" x="${x}" y="${y}" width="20" height="26" ${running ? RUNNING : IDLE}/>`;
 
-// Libellés longs (Ultraschallbad, Synthèse…) en plus petit pour tenir dans la case.
-const fontSize = (label) => (label.length > 9 ? 11 : 14);
+// Nom de la hotte : un mot par ligne s'il est long, et resserré s'il dépasse la case.
+function label(p, cls) {
+  const lines = p.label.length > 8 ? p.label.split(' ') : [p.label];
+  return lines.map((s, i) => {
+    const fit = s.length * 7.2 > p.w - 6 ? ` textLength="${p.w - 6}" lengthAdjust="spacingAndGlyphs"` : '';
+    return `<text class="${cls}" x="${p.x + p.w / 2}" y="${p.y + 17 + i * 14}"${fit}>${s}</text>`;
+  }).join('');
+}
 
 function planSvg(running) {
-  const zones = ZONES.map((z) => `<rect class="zone" x="${z.x}" y="${z.y}" width="${z.w}" height="${z.h}" rx="14"/>`
-    + `<text class="z" x="${z.x + 12}" y="${z.y + 22}">${z.title}</text>`).join('');
+  const zones = ZONES.map((z) => `<rect class="zone" x="${z.x + 3}" y="${z.y}" width="${z.w - 6}" height="${z.h}" rx="12"/>`
+    + `<text class="z" x="${z.x + 14}" y="${z.y + 21}">${z.title}</text>`).join('');
+  const aisles = AISLE_BOXES.map((a) => `<rect class="aisle" x="${a.x}" y="${a.y}" width="${a.w}" height="${a.h}"/>`).join('');
   const postes = POSTES.map((p) => {
+    const rect = (cls) => `<rect class="${cls}" x="${p.x + 2}" y="${p.y + 1}" width="${p.w - 4}" height="${p.h - 2}" rx="8"/>`;
+    const num = (cls) => `<text class="${cls}" x="${p.x + p.w - 8}" y="${p.y + p.h - 7}">${p.num}</text>`;
     if (p.slots) {
       const busy = (running[p.id] ?? []).length > 0;
       return `<g class="poste" data-poste="${p.id}">`
-        + `<rect class="acc" x="${p.x}" y="${p.y}" width="${W}" height="${H}" rx="10"/>`
-        + `<text class="t-acc" x="${p.x + W / 2 - 8}" y="${p.y + 26}" font-size="${fontSize(p.label)}">${p.label}</text>`
-        + `<text class="t-acc n" x="${p.x + W / 2}" y="${p.y + H - 8}">${p.num}</text>`
-        + flask(p.x + W - 24, p.y + 4, busy)
+        + rect('acc') + label(p, 't-acc') + num('t-acc n') + flask(p.x + 6, p.y + p.h - 30, busy)
         + '</g>';
     }
-    if (!p.label) {
-      return `<rect class="off" x="${p.x}" y="${p.y}" width="${W}" height="${H}" rx="10"/>`
-        + `<text class="n" x="${p.x + W / 2}" y="${p.y + H / 2 + 4}">${p.num}</text>`;
-    }
-    return `<rect class="slot" x="${p.x}" y="${p.y}" width="${W}" height="${H}" rx="10"/>`
-      + `<text class="t-off" x="${p.x + W / 2}" y="${p.y + 26}" font-size="${fontSize(p.label)}">${p.label}</text>`
-      + `<text class="n" x="${p.x + W / 2}" y="${p.y + H - 8}">${p.num}</text>`;
+    if (!p.label) return rect('off') + num('n');
+    return rect('slot') + label(p, 't-off') + num('n');
   }).join('');
-  const legend = flask(20, 600, true) + `<text class="legend" x="48" y="618">${t('running')}</text>`
-    + flask(160, 600, false) + `<text class="legend" x="188" y="618">${t('free')}</text>`;
-  return `<svg class="plan" viewBox="0 0 1000 620" role="img" aria-label="${t('plan')}">`
+  const ly = VIEW.h - 30;
+  const legend = flask(20, ly, true) + `<text class="legend" x="48" y="${ly + 18}">${t('running')}</text>`
+    + flask(180, ly, false) + `<text class="legend" x="208" y="${ly + 18}">${t('free')}</text>`
+    + `<rect class="aisle" x="320" y="${ly + 4}" width="40" height="18"/><text class="legend" x="370" y="${ly + 18}">${t('aisle')}</text>`;
+  return `<svg class="plan" viewBox="0 0 ${VIEW.w} ${VIEW.h}" role="img" aria-label="${t('plan')}">`
     + `<defs><symbol id="flask" viewBox="0 0 60 76">`
     + '<rect x="22" y="2" width="16" height="26" rx="3" fill="#F8FAFC" stroke="#94A3B8" stroke-width="2"/>'
     + '<circle cx="30" cy="52" r="24" fill="#F8FAFC" stroke="#94A3B8" stroke-width="2"/>'
@@ -42,7 +45,8 @@ function planSvg(running) {
     + '<circle cx="36" cy="60" r="2.8" fill="#FFFFFF" fill-opacity="0.85" style="animation: var(--anim)"/>'
     + '<circle cx="30" cy="44" r="2.2" fill="#FFFFFF" fill-opacity="0.85" style="animation: var(--anim)"/>'
     + '</symbol></defs>'
-    + zones + postes + legend + '</svg>';
+    + `<rect class="paper" width="${VIEW.w}" height="${VIEW.h}"/>`
+    + zones + aisles + postes + legend + '</svg>';
 }
 
 function posteSheet(poste, reactions) {
@@ -88,7 +92,7 @@ export async function planView() {
   });
   app.replaceChildren(
     topbar(h('h1', {}, t('plan')), langSwitch()),
-    h('main', {}, tabs('plan'), frame, h('p', { class: 'muted' }, t('planHelp')),
+    h('main', { class: 'wide' }, tabs('plan'), frame, h('p', { class: 'muted' }, t('planHelp')),
       h('div', { class: 'actions noprint' }, button(t('entranceQr'), entranceQr, 'btn ghost'))),
   );
 }

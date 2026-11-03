@@ -95,15 +95,18 @@ input, textarea { width: 100%; min-height: 48px; padding: 10px 12px; border: 1px
 .qr { width: 150px; margin: 8px auto 4px; }
 .qr svg { display: block; width: 100%; height: auto; }
 
-.plan-wrap { width: 100%; }
-.plan { display: block; width: 100%; height: auto; }
-.plan .zone { fill: #EEF2F6; }
+main.wide { max-width: 1480px; }
+.plan-wrap { width: 100%; overflow-x: auto; }
+.plan { display: block; width: 100%; min-width: 900px; height: auto; } /* sur téléphone : défilement horizontal */
+.plan .paper { fill: #FFFFFF; }
+.plan .zone { fill: #E9EEF3; }
+.plan .aisle { fill: #FFFFFF; stroke: #CBD5E1; stroke-dasharray: 5 4; }
 .plan .slot { fill: #FFFFFF; stroke: #D7DEE6; stroke-width: 1; }
 .plan .acc { fill: #2A9D8F; }
-.plan text { font-family: Arial, Helvetica, sans-serif; text-anchor: middle; font-size: 15px; }
+.plan text { font-family: Arial, Helvetica, sans-serif; text-anchor: middle; font-size: 12px; }
 .plan .t-off { fill: #334155; }
 .plan .t-acc { fill: #FFFFFF; font-weight: 700; }
-.plan .n { font-size: 11px; fill: #94A3B8; }
+.plan .n { font-size: 11px; fill: #94A3B8; text-anchor: end; }
 .plan .t-acc.n { fill: #E0F2F1; font-weight: 400; }
 .plan .off { fill: #F8FAFC; stroke: #E2E8F0; stroke-width: 1; }
 .plan .z { text-anchor: start; font-size: 14px; font-weight: 700; fill: #475569; }
