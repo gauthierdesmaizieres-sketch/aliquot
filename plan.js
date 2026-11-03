@@ -53,7 +53,7 @@ function posteSheet(poste, reactions) {
   const row = (r) => h('div', { class: 'card' },
     h('strong', {}, r.code), r.title && h('div', {}, r.title),
     h('div', { class: 'hazards' }, r.hazards.map((k) => h('span', { class: 'hazard' }, t(`hz_${k}`)))),
-    r.reagents.filter((x) => x.cas).map((x) => h('div', {}, `${x.name || x.cas} `, ghsChips(x.cas))),
+    r.reagents.filter((x) => x.cas || x.name).map((x) => h('div', {}, `${x.name || x.cas} `, ghsChips(x))),
     safeHttp(r.sds_links).map((u) => h('a', { href: u, rel: 'noopener', target: '_blank' }, `SDS : ${new URL(u).hostname}`)),
     link(`#/r/${r.id}`, t('open'), 'btn ghost'));
   const panel = sheet(

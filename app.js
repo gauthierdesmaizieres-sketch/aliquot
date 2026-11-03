@@ -1,7 +1,10 @@
 import { t, STEPS, HAZARDS, COLORS } from './i18n.js';
 import { store, isDemo, newReaction } from './store.js';
 import { tlcValues, rf } from './rf.js';
-import { app, h, when, day, link, button, safeHttp, fail, field, photoImg, sheet, topbar, langSwitch, shrink, tabs, ghsChips } from './ui.js';
+import { app, h, when, day, link, button, safeHttp, fail, field, photoImg, sheet, topbar, langSwitch, shrink, tabs, ghsChips, toast } from './ui.js';
+import { ghsFor, hazardKeys } from './pubchem.js';
+
+const NIGHT = ['Argon', 'Rührer', 'Heizbad', 'Vakuumpumpe', 'Lyophilisator', 'Thermostat', 'Kühlwasser', 'Mya-Gerät'];
 import { transferHome, transferRoom, stopTransfer } from './transfer.js';
 import { reagentListView, reagentFormView, reagentDetailView, suppliersView } from './reagents.js';
 import { planView } from './plan.js';
@@ -73,6 +76,7 @@ function exportExcel(reactions, entries) {
       [t('reagents')]: r.reagents.map((x) => [x.name, x.lot && `Lot ${x.lot}`, x.ref].filter(Boolean).join(' ')).join(' ; '),
       [t('hazards')]: r.hazards.map((k) => t(`hz_${k}`)).join(', '),
       [t('responsible')]: r.responsible,
+      [t('responsible2')]: r.responsible2,
       [t('photos')]: own.filter((e) => e.photo_path).length,
       [`${t('tlc')} Rf`]: own.flatMap((e) => tlcValues(e.tlc)).join(', '),
     };
@@ -83,6 +87,7 @@ function exportExcel(reactions, entries) {
 }
 
 function formView(r, stock, team) {
+  r.night ??= [];
   const input = (key, props = {}) => h('input', { value: r[key] ?? '', onInput: (e) => { r[key] = e.target.value; }, ...props });
   const area = (key) => h('textarea', { rows: 3, value: r[key] ?? '', onInput: (e) => { r[key] = e.target.value; } });
   const list = h('div', { class: 'stack' });
@@ -100,11 +105,59 @@ function formView(r, stock, team) {
       e.target.classList.toggle('on');
     },
   }, t(`hz_${k}`))));
-  const submit = (e) => {
+  const fillHazards = button(t('hazardsPubchem'), async () => {
+    fillHazards.disabled = true;
+    const lists = await Promise.all(r.reagents.map(ghsFor));
+    fillHazards.disabled = false;
+    const found = hazardKeys(lists.flat().filter(Boolean).map((g) => g.code));
+    r.hazards = [...new Set([...r.hazards, ...found])];
+    hazards.querySelectorAll('.chip').forEach((c, i) => c.classList.toggle('on', r.hazards.includes(HAZARDS[i])));
+    toast(lists.includes(null) ? t('pubchemDown') : `${t('hazardsFound')} : ${found.map((k) => t(`hz_${k}`)).join(', ') || '—'}`);
+  }, 'btn ghost');
+  const person = (key) => field(t(key), h('select', { onChange: (e) => { r[key] = e.target.value; } },
+    h('option', { value: '' }, t('choosePerson')),
+    [...new Set([...team, r[key]].filter(Boolean))].map((m) => h('option', { value: m, selected: r[key] === m }, m))));
+  // Tableau de surveillance de nuit : une ligne par appareil en marche.
+  const nightRows = NIGHT.map((item) => {
+    const get = () => r.night.find((n) => n.item === item);
+    const pick = (key, opts) => h('select', {
+      ariaLabel: `${item} : ${t(`night_${key}`)}`, disabled: !get(), onChange: (e) => { get()[key] = e.target.value; },
+    }, opts.map((o) => h('option', { value: o, selected: get()?.[key] === o }, t(`n_${o}`))));
+    const control = pick('control', ['yes', 'no']);
+    const action = pick('action', ['off', 'call']);
+    const on = h('input', {
+      type: 'checkbox', checked: !!get(), onChange: (e) => {
+        r.night = e.target.checked ? [...r.night, { item, control: control.value, action: action.value }] : r.night.filter((n) => n.item !== item);
+        control.disabled = action.disabled = !e.target.checked;
+      },
+    });
+    return h('div', { class: 'night-row' }, h('label', {}, on, ` ${item}`), control, action);
+  });
+  // Ctrl+V : les captures collées sont ajoutées comme notes après l'enregistrement.
+  const shots = [];
+  const thumbs = h('div', { class: 'strip' });
+  const paste = async (e) => {
+    if (!thumbs.isConnected) return document.removeEventListener('paste', paste);
+    const item = [...(e.clipboardData?.items ?? [])].find((i) => i.type.startsWith('image/'));
+    if (!item) return;
+    shots.push(await shrink(item.getAsFile()));
+    thumbs.append(h('img', { class: 'preview', alt: t('pastedShot'), src: URL.createObjectURL(shots.at(-1)) }));
+  };
+  document.addEventListener('paste', paste);
+  const submit = async (e) => {
     e.preventDefault();
     r.reagents = r.reagents.filter((x) => x.name || x.lot || x.ref || x.cas);
     if (!r.end_planned) r.end_planned = null;
-    store.saveReaction(r).then((saved) => { location.hash = `#/r/${saved.id}`; }).catch(fail);
+    try {
+      r.id = (await store.saveReaction(r)).id; // un nouvel essai après une erreur met à jour la même réaction
+      while (shots.length) {
+        await store.addEntry({ reaction_id: r.id, step: 'setup', note: '', color: '' }, shots[0]);
+        shots.shift();
+      }
+      location.hash = `#/r/${r.id}`;
+    } catch (err) {
+      fail(err);
+    }
   };
   app.replaceChildren(
     topbar(link(r.id ? `#/r/${r.id}` : '#/labo', `‹ ${t('back')}`, 'btn ghost')),
@@ -112,6 +165,7 @@ function formView(r, stock, team) {
       h('h1', {}, r.id ? t('edit') : t('newReaction')),
       field(t('codeLabel'), input('code', { required: true, placeholder: 'GD-042' })),
       field(t('title'), input('title')),
+      h('p', { class: 'muted' }, t('pasteHint')), thumbs,
       field(t('poste'), h('select', { onChange: (e) => { r.poste = e.target.value; } },
         h('option', { value: '' }, t('choosePoste')),
         reactionPostes().map((p) => h('option', { value: p.id, selected: r.poste === p.id }, p.label)))),
@@ -127,12 +181,14 @@ function formView(r, stock, team) {
         },
       }, h('option', { value: '' }, t('fromStock')), stock.map((x, i) => h('option', { value: i }, [x.product, x.lot].filter(Boolean).join(' · ')))),
       h('h2', {}, t('safety')),
-      h('div', { class: 'field' }, h('span', {}, t('hazards')), hazards),
+      h('div', { class: 'field' }, h('span', {}, t('hazards')), hazards, fillHazards),
       field(t('extinguisher'), input('extinguisher'), t('extinguisherHelp')),
       field(t('instructions'), area('instructions')),
-      field(t('responsible'), h('select', { onChange: (e) => { r.responsible = e.target.value; } },
-        h('option', { value: '' }, t('choosePerson')),
-        [...new Set([...team, r.responsible].filter(Boolean))].map((m) => h('option', { value: m, selected: r.responsible === m }, m)))),
+      h('details', { class: 'field night', open: r.night.length > 0 }, h('summary', {}, t('night')),
+        h('div', { class: 'night-row muted' }, h('span', {}, t('night_on')), h('span', {}, t('night_control')), h('span', {}, t('night_action'))),
+        nightRows),
+      person('responsible'),
+      person('responsible2'),
       field(t('phone'), input('phone', { type: 'tel' })),
       field(t('endPlanned'), input('end_planned', { type: 'date' })),
       field(t('sdsLinks'), area('sds_links')),
@@ -251,7 +307,7 @@ async function detailView(id) {
         h('span', { class: `pill ${reaction.status}` }, t(reaction.status)),
         link(`#/report/${id}`, t('report')), link(`#/label/${id}`, t('label')),
         button(reaction.status === 'running' ? t('markDone') : t('markRunning'), toggle, 'btn ghost')),
-      reaction.reagents.length > 0 && h('section', {}, h('h2', {}, t('reagents')), h('ul', {}, reaction.reagents.map((x) => h('li', {}, [x.name, x.lot && `Lot ${x.lot}`, x.ref].filter(Boolean).join(' · '), ghsChips(x.cas))))),
+      reaction.reagents.length > 0 && h('section', {}, h('h2', {}, t('reagents')), h('ul', {}, reaction.reagents.map((x) => h('li', {}, [x.name, x.lot && `Lot ${x.lot}`, x.ref].filter(Boolean).join(' · '), ghsChips(x))))),
       plates.length > 1 && h('section', {}, h('h2', {}, t('tlcCompare')),
         h('div', { class: 'strip' }, plates.map((e) => h('figure', {}, plate(e), h('figcaption', {}, when(e.taken_at)))))),
       h('h2', {}, t('timeline')),
@@ -284,6 +340,9 @@ function safetyBlock(r) {
     row(t('extinguisher'), r.extinguisher),
     row(t('instructions'), r.instructions),
     row(t('responsible'), [r.responsible, r.phone].filter(Boolean).join(' · ')),
+    r.responsible2 && row(t('responsible2'), r.responsible2),
+    r.night?.length > 0 && h('div', { class: 'safety-row' }, h('span', {}, t('night')), h('ul', {}, r.night.map((n) => h('li', {},
+      `${n.item} · ${t('night_control')} : ${t(`n_${n.control}`)} · ${t('night_action')} : ${t(`n_${n.action}`)}`)))),
     r.end_planned && row(t('endPlanned'), day(r.end_planned)),
     !r.checked_by ? h('p', { class: 'draft' }, t('draft')) : row(t('checkedBy'), r.checked_by),
   ];

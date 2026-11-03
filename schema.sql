@@ -19,6 +19,8 @@ create table public.reactions (
   extinguisher text not null default '',
   instructions text not null default '',
   responsible text not null default '',
+  responsible2 text not null default '',
+  night jsonb not null default '[]',
   phone text not null default '',
   end_planned date,
   sds_links text not null default '',
@@ -79,14 +81,6 @@ create policy team_all on public.suppliers for all to authenticated using (publi
 grant select, insert, update, delete on public.reagents, public.suppliers to authenticated;
 
 -- Fiche du QR : lisible sans compte, uniquement avec le jeton, et sans titre, réactifs ni photos.
-create function public.public_safety(t uuid)
-returns table (code text, hazards jsonb, extinguisher text, instructions text, responsible text,
-               phone text, end_planned date, sds_links text, checked_by text)
-language sql stable security definer set search_path = ''
-as $$ select code, hazards, extinguisher, instructions, responsible, phone, end_planned, sds_links, checked_by
-      from public.reactions where qr_token = t $$;
-revoke execute on function public.public_safety(uuid) from public;
-grant execute on function public.public_safety(uuid) to anon, authenticated;
 revoke execute on function public.is_team() from public, anon;
 grant execute on function public.is_team() to authenticated;
 
@@ -98,6 +92,20 @@ create policy team_photos on storage.objects for all to authenticated
 -- Base déjà créée ? Ajouter le poste de paillasse (plan du labo) :
 alter table public.reactions add column if not exists poste text not null default '';
 alter table public.reagents add column if not exists cas text not null default '';
+-- 2e responsable (manager) et tableau de surveillance de nuit :
+alter table public.reactions add column if not exists responsible2 text not null default '';
+alter table public.reactions add column if not exists night jsonb not null default '[]';
+
+-- Fiche du QR : lisible sans compte, uniquement avec le jeton, et sans titre, réactifs ni photos.
+drop function if exists public.public_safety(uuid);
+create function public.public_safety(t uuid)
+returns table (code text, hazards jsonb, extinguisher text, instructions text, responsible text, responsible2 text,
+               night jsonb, phone text, end_planned date, sds_links text, checked_by text)
+language sql stable security definer set search_path = ''
+as $$ select code, hazards, extinguisher, instructions, responsible, responsible2, night, phone, end_planned, sds_links, checked_by
+      from public.reactions where qr_token = t $$;
+revoke execute on function public.public_safety(uuid) from public;
+grant execute on function public.public_safety(uuid) to anon, authenticated;
 
 -- Liste des responsables possibles (la table team n'est pas lisible directement).
 create or replace function public.team_members() returns setof text

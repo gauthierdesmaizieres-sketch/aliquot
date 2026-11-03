@@ -4,11 +4,11 @@ export const isDemo = !SUPABASE_URL;
 
 const blank = () => ({
   code: '', title: '', status: 'running', poste: '', reagents: [], hazards: [], extinguisher: '', instructions: '',
-  responsible: '', phone: '', end_planned: null, sds_links: '', checked_by: '',
+  responsible: '', responsible2: '', phone: '', end_planned: null, sds_links: '', checked_by: '', night: [],
 });
 export const newReaction = blank;
 
-const SAFETY_FIELDS = ['code', 'hazards', 'extinguisher', 'instructions', 'responsible', 'phone', 'end_planned', 'sds_links', 'checked_by'];
+const SAFETY_FIELDS = ['code', 'hazards', 'extinguisher', 'instructions', 'responsible', 'responsible2', 'night', 'phone', 'end_planned', 'sds_links', 'checked_by'];
 
 function supabaseStore() {
   const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
