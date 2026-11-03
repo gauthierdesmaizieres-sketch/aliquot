@@ -1,16 +1,25 @@
 /* Verre clair : fond pastel à halos, cartes blanches translucides et floutées. */
 :root {
   --bg: #eef3f8; --card: rgba(255, 255, 255, .62); --ink: #1c2321; --muted: #5f6b67; --line: rgba(15, 60, 80, .12);
-  --glass-line: rgba(255, 255, 255, .95); --halo-1: #9fe1cb99; --halo-2: #b5d4f4aa;
+  --glass-line: rgba(255, 255, 255, .95); --halo-1: #9fe1cb99; --halo-2: #b5d4f4aa; --tab-on: #fff;
   --accent: #0f766e; --on-accent: #fff; --danger: #b42318; --warn-bg: #fef3c7; --warn-ink: #78350f;
 }
+/* Verre sombre teal : nuit bleutée, halos teal et violet, verre fumé. Suit le système, sauf choix manuel (bouton ☾/☀). */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0f1716; --card: rgba(255, 255, 255, .07); --ink: #eef1ef; --muted: #a2adaa; --line: rgba(255, 255, 255, .12);
-    --glass-line: rgba(255, 255, 255, .14); --halo-1: #1d9e7540; --halo-2: #378add33;
-    --accent: #2dd4bf; --on-accent: #06302b; --danger: #f97066; --warn-bg: #422c0a; --warn-ink: #fde68a;
+  :root:not([data-theme="light"]) {
+    --bg: #0b1220; --card: rgba(255, 255, 255, .07); --ink: #e2e8f0; --muted: #94a3b8; --line: rgba(255, 255, 255, .12);
+    --glass-line: rgba(255, 255, 255, .14); --halo-1: #1d9e7559; --halo-2: #534ab759; --tab-on: rgba(93, 202, 165, .2);
+    --accent: #5dcaa5; --on-accent: #04342c; --danger: #f97066; --warn-bg: #422c0a; --warn-ink: #fde68a;
   }
 }
+:root[data-theme="dark"] {
+  --bg: #0b1220; --card: rgba(255, 255, 255, .07); --ink: #e2e8f0; --muted: #94a3b8; --line: rgba(255, 255, 255, .12);
+  --glass-line: rgba(255, 255, 255, .14); --halo-1: #1d9e7559; --halo-2: #534ab759; --tab-on: rgba(93, 202, 165, .2);
+  --accent: #5dcaa5; --on-accent: #04342c; --danger: #f97066; --warn-bg: #422c0a; --warn-ink: #fde68a;
+}
+:root { color-scheme: light dark; }
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }
 * { box-sizing: border-box; }
 body { margin: 0; min-height: 100vh; color: var(--ink); font: 17px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   background: radial-gradient(circle at 90% 0%, var(--halo-1), transparent 40%),
@@ -35,8 +44,9 @@ main.with-fab { padding-bottom: 120px; }
 .actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0; }
 .tabs { display: flex; gap: 4px; margin: 4px 0 12px; padding: 4px; border-radius: 14px; background: var(--card); border: 1px solid var(--glass-line); }
 .tab { flex: 1; padding: 10px; text-align: center; border-radius: 10px; color: var(--muted); font-weight: 600; text-decoration: none; }
-.tab.on { background: var(--card); color: var(--accent); box-shadow: 0 1px 4px rgba(15, 60, 80, .12); }
-@media (prefers-color-scheme: light) { .tab.on { background: #fff; } }
+.tab.on { background: var(--tab-on); color: var(--accent); box-shadow: 0 1px 4px rgba(15, 60, 80, .12); }
+.tab.home { flex: 0 0 48px; font-size: 1.2rem; }
+.theme { min-width: 44px; padding: 0 10px; font-size: 1.2rem; }
 .pill.expired { background: var(--danger); border-color: var(--danger); color: #fff; }
 .pill.soon { background: var(--warn-bg); color: var(--warn-ink); }
 .thumbs { display: flex; gap: 8px; overflow-x: auto; }

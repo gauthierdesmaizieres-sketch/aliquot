@@ -59,9 +59,26 @@ export function sheet(...kids) {
   return { close: () => el.remove() };
 }
 
-export function topbar(left, ...right) {
-  return h('header', { class: 'top noprint' }, left, h('div', { class: 'top-right' }, ...right));
+// Thème choisi à la main (clair / sombre), retenu sur cet appareil ; sinon celui du système.
+const dark = () => (document.documentElement.dataset.theme ?? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')) === 'dark';
+try { const saved = localStorage.getItem('theme'); if (saved) document.documentElement.dataset.theme = saved; } catch {}
+
+function themeSwitch() {
+  const btn = h('button', { type: 'button', class: 'btn ghost theme', title: t('theme'), ariaLabel: t('theme') }, dark() ? '☀' : '☾');
+  btn.addEventListener('click', () => {
+    const next = dark() ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    btn.textContent = next === 'dark' ? '☀' : '☾';
+    try { localStorage.setItem('theme', next); } catch {}
+  });
+  return btn;
 }
+
+export function topbar(left, ...right) {
+  return h('header', { class: 'top noprint' }, left, h('div', { class: 'top-right' }, ...right, themeSwitch()));
+}
+
+export const homeLink = () => link('#/', `⌂ ${t('home')}`, 'btn ghost');
 
 export function langSwitch() {
   return h('div', { class: 'lang' }, ['fr', 'de'].map((l) => h('button', {
@@ -84,6 +101,7 @@ export async function shrink(file, max = 2000) {
 
 export function tabs(active) {
   return h('nav', { class: 'tabs noprint' },
+    h('a', { href: '#/', class: 'tab home', title: t('home'), ariaLabel: t('home') }, '⌂'),
     link('#/labo', t('reactions'), `tab ${active === 'reactions' ? 'on' : ''}`),
     link('#/plan', t('plan'), `tab ${active === 'plan' ? 'on' : ''}`),
     link('#/stock', t('stock'), `tab ${active === 'stock' ? 'on' : ''}`),

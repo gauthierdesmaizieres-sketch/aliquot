@@ -1,6 +1,6 @@
 import { t } from './i18n.js';
 import { store } from './store.js';
-import { app, h, button, link, fail, topbar, langSwitch, shrink } from './ui.js';
+import { app, h, button, link, fail, topbar, langSwitch, shrink, homeLink } from './ui.js';
 
 let timer;
 export const stopTransfer = () => clearInterval(timer);
@@ -89,7 +89,7 @@ export async function transferRoom(room) {
   stopTransfer();
   await refresh();
   app.replaceChildren(
-    topbar(h('h1', {}, t('trRoom')), langSwitch()),
+    topbar(h('h1', {}, t('trRoom')), homeLink(), langSwitch()),
     h('main', {},
       qrBlock(location.href),
       h('div', { class: 'actions tr-send' },
