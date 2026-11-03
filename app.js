@@ -5,6 +5,7 @@ import { app, h, when, day, link, button, safeHttp, fail, field, photoImg, sheet
 import { transferHome, transferRoom, stopTransfer } from './transfer.js';
 import { reagentListView, reagentFormView, reagentDetailView, suppliersView } from './reagents.js';
 import { planView } from './plan.js';
+import { ideasView } from './ideas.js';
 import { reactionPostes, posteLabel } from './plan-data.js';
 
 // Marques CCM en pourcentages, pour rester justes à toutes les tailles d'image.
@@ -330,6 +331,7 @@ async function route() {
     if (page === 'r') return await detailView(arg);
     if (page === 'report') return await reportView(arg);
     if (page === 'plan') return await planView();
+    if (page === 'ideas') return ideasView();
     if (page === 'label') return await labelView(arg);
     await listView();
   } catch (e) {

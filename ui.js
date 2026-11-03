@@ -86,5 +86,6 @@ export function tabs(active) {
   return h('nav', { class: 'tabs noprint' },
     link('#/labo', t('reactions'), `tab ${active === 'reactions' ? 'on' : ''}`),
     link('#/plan', t('plan'), `tab ${active === 'plan' ? 'on' : ''}`),
-    link('#/stock', t('stock'), `tab ${active === 'stock' ? 'on' : ''}`));
+    link('#/stock', t('stock'), `tab ${active === 'stock' ? 'on' : ''}`),
+    link('#/ideas', t('ideas'), `tab ${active === 'ideas' ? 'on' : ''}`));
 }
