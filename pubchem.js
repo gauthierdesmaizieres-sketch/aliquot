@@ -4,19 +4,28 @@ const CAS = /^\d{2,7}-\d{2}-\d$/;
 const SIGMA = /^([A-Z]{0,2}\d{3,6})(-\w+)?$/i; // 270997, 270997-1L, D65100
 const SIGMA_BRANDS = ['SIAL', 'ALDRICH', 'SIGALD', 'SIGMA', 'FLUKA']; // suffixe des dépôts Sigma-Aldrich dans PubChem
 
+const EU = /ECHA|1272\/2008/; // classification européenne (CLP), reprise en Suisse
+const MIN_SHARE = 25; // % des déclarants ECHA ; en dessous, mention rare (souvent impureté ou autre forme)
+
 // Extrait les mentions H uniques : { code: 'H225', text: 'Highly flammable liquid and vapor' }.
+// Si PubChem a des sources européennes, on ne garde qu'elles, et seulement les mentions partagées par ≥ 25 % des déclarants.
 export function parseGhs(json) {
-  const found = new Map();
-  const walk = (n) => {
-    if (Array.isArray(n)) return n.forEach(walk);
+  const sources = Object.fromEntries((json?.Record?.Reference ?? []).map((r) => [r.ReferenceNumber, r.SourceName ?? '']));
+  const all = [];
+  const walk = (n, ref) => {
+    if (Array.isArray(n)) return n.forEach((x) => walk(x, ref));
     if (!n || typeof n !== 'object') return;
+    const here = n.ReferenceNumber ?? ref;
     (n.StringWithMarkup ?? []).forEach(({ String: s }) => {
-      const m = /^(H\d{3})[^:]*:\s*(.+?)\s*(\[|$)/.exec(s);
-      if (m && !found.has(m[1])) found.set(m[1], m[2]);
+      const m = /^(H\d{3})(?:\s*\(>?\s*([\d.]+)\s*%\))?[^:]*:\s*(.+?)\s*(\[|$)/.exec(s);
+      if (m) all.push({ code: m[1], share: m[2] ? +m[2] : 100, text: m[3], eu: EU.test(sources[here] ?? '') });
     });
-    Object.values(n).forEach(walk);
+    Object.values(n).forEach((v) => walk(v, here));
   };
   walk(json);
+  const kept = all.some((x) => x.eu) ? all.filter((x) => x.eu && x.share >= MIN_SHARE) : all;
+  const found = new Map();
+  kept.forEach((x) => { if (!found.has(x.code)) found.set(x.code, x.text); });
   return [...found].map(([code, text]) => ({ code, text }));
 }
 

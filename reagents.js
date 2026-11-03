@@ -1,5 +1,6 @@
 import { t } from './i18n.js';
 import { store } from './store.js';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
 import { app, h, day, link, button, fail, field, photoImg, sheet, topbar, langSwitch, shrink, tabs, toast } from './ui.js';
 import { parseGs1, parseText, learnKey, expiryState, coaName, DEFAULT_SUPPLIERS } from './label.js';
 
@@ -36,9 +37,9 @@ async function visionRead(blob) {
     reader.onload = () => res(reader.result.split(',')[1]);
     reader.readAsDataURL(blob);
   });
-  const res = await fetch('/.netlify/functions/read-label', {
+  const res = await fetch(`${SUPABASE_URL}/functions/v1/read-label`, {
     method: 'POST',
-    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    headers: { Authorization: `Bearer ${token}`, apikey: SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
     body: JSON.stringify({ image }),
   });
   if (!res.ok) throw new Error(`lecture IA : ${await res.text()}`);

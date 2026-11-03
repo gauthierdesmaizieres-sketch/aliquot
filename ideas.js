@@ -5,7 +5,8 @@ import { app, h, topbar, langSwitch, tabs } from './ui.js';
 const IDEAS = [
   ['Ctrl+V sur une réaction', 'fait', 'Coller une capture d’écran crée une note avec l’image.'],
   ['Lecture des étiquettes par IA (Gemini)', 'à tester', 'Active dès la connexion : remplit produit, référence, CAS, lot et péremption à partir de la photo. Repli sur la lecture locale si l’IA échoue.'],
-  ['Héberger sans Netlify : GitHub Pages + Supabase', 'v2', 'Fin des crédits Netlify (chaque mise en ligne en coûte). Site sur GitHub Pages, fonction IA dans Supabase Edge Functions (clé Gemini en secret Supabase). Même compte et mot de passe. À prévoir : nouvelle adresse, réimprimer le QR d’entrée, ajouter l’adresse dans Supabase Auth.'],
+  ['Héberger sans Netlify : GitHub Pages + Supabase', 'fait', 'Site sur GitHub Pages, fonction IA dans Supabase Edge Functions (clé Gemini en secret Supabase). Même compte et mot de passe. L’ancienne adresse Netlify renvoie vers la nouvelle.'],
+  ['Mentions H : sources européennes en priorité', 'fait', 'PubChem : classification CLP (ECHA) seulement, mentions déclarées par au moins 25 % des fournisseurs. Les fiches Sigma-Aldrich ne sont pas lisibles automatiquement (accès bloqué).'],
   ['Pré-remplir le tableau de réactifs depuis un screenshot Signals', 'idée', 'Lit noms, MW, équivalents, masses et moles. Contrôle : masse ÷ MW doit donner les moles.'],
   ['Reconnaissance des structures chimiques : DECIMER et MolScribe', 'idée', 'Convertissent un dessin de molécule en SMILES. À installer sur un serveur ; résultat à vérifier.'],
   ['Lecture du journal Signals ELN (API REST)', 'idée', 'Clé API stockée côté serveur, jamais dans le navigateur. À valider par l’IT du labo.'],

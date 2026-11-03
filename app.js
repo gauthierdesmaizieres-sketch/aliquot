@@ -140,8 +140,11 @@ function formView(r, stock, team) {
     if (!thumbs.isConnected) return document.removeEventListener('paste', paste);
     const item = [...(e.clipboardData?.items ?? [])].find((i) => i.type.startsWith('image/'));
     if (!item) return;
-    shots.push(await shrink(item.getAsFile()));
-    thumbs.append(h('img', { class: 'preview', alt: t('pastedShot'), src: URL.createObjectURL(shots.at(-1)) }));
+    const blob = await shrink(item.getAsFile());
+    shots.push(blob);
+    const fig = h('figure', { class: 'shot' }, h('img', { class: 'preview', alt: t('pastedShot'), src: URL.createObjectURL(blob) }),
+      h('button', { type: 'button', class: 'btn ghost danger', ariaLabel: t('delete'), onClick: () => { shots.splice(shots.indexOf(blob), 1); fig.remove(); } }, '×'));
+    thumbs.append(fig);
   };
   document.addEventListener('paste', paste);
   const submit = async (e) => {
