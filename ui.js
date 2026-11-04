@@ -115,8 +115,18 @@ const TAB_ICONS = {
   stock: '<path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/>',
   ideas: '<path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2V17h6v-.3c0-.8.4-1.5 1-2A7 7 0 0 0 12 2z"/>',
 };
-const tab = (key, label, active) => h('a', { href: `#/${key === 'reactions' ? 'labo' : key}`, class: `tab ${active === key ? 'on' : ''}` },
+const tab = (key, label, active, extra = '') => h('a', { href: `#/${key === 'reactions' ? 'labo' : key}`, class: `tab ${active === key ? 'on' : ''} ${extra}` },
   h('span', { class: 'tab-ico', innerHTML: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${TAB_ICONS[key]}</svg>` }), label);
+
+// Accueil : logo au centre, les quatre onglets autour (haut, droite, bas, gauche).
+export function orbit() {
+  return h('div', { class: 'orbit' },
+    h('img', { class: 'orb', src: 'icon.svg', alt: '' }),
+    tab('reactions', t('reactions'), null, 'o1'),
+    tab('plan', t('plan'), null, 'o2'),
+    tab('stock', t('stock'), null, 'o3'),
+    tab('ideas', t('ideas'), null, 'o4'));
+}
 
 export function tabs(active) {
   return h('nav', { class: 'tabs noprint' },

@@ -1,6 +1,6 @@
 import { t } from './i18n.js';
 import { store } from './store.js';
-import { app, h, button, link, fail, topbar, langSwitch, shrink, homeLink } from './ui.js';
+import { app, h, button, fail, topbar, langSwitch, shrink, homeLink, orbit } from './ui.js';
 
 let timer;
 export const stopTransfer = () => clearInterval(timer);
@@ -10,10 +10,10 @@ export async function transferHome() {
   app.replaceChildren(
     topbar(h('h1', {}, t('appName')), langSwitch()),
     h('main', { class: 'transfer-home' },
+      orbit(),
       h('h2', {}, t('trTitle')),
       h('p', { class: 'muted' }, t('trIntro')),
-      button(t('trStart'), () => store.createRoom().then((id) => { location.hash = `#/t/${id}`; }).catch(fail), 'btn primary'),
-      link('#/labo', t('labSpace'), 'btn ghost')),
+      button(t('trStart'), () => store.createRoom().then((id) => { location.hash = `#/t/${id}`; }).catch(fail), 'btn primary')),
   );
 }
 

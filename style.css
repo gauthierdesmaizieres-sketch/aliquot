@@ -50,6 +50,13 @@ main.with-fab { padding-bottom: 120px; }
 .tab.home { flex: 0 0 48px; font-size: 1.2rem; }
 .tab { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: .85rem; }
 .tab-ico svg { width: 22px; height: 22px; display: block; }
+.orbit { position: relative; height: 340px; margin: 8px 0 16px; }
+.orbit .orb { position: absolute; left: 50%; top: 50%; width: 96px; height: 96px; transform: translate(-50%, -50%); border-radius: 24px; }
+.orbit .tab { position: absolute; width: 104px; transform: translate(-50%, -50%); padding: 12px 8px; color: var(--ink); background: var(--card); border: 1px solid var(--glass-line); border-radius: 16px; }
+.orbit .o1 { left: 50%; top: 15%; }
+.orbit .o2 { left: 81%; top: 50%; }
+.orbit .o3 { left: 50%; top: 85%; }
+.orbit .o4 { left: 19%; top: 50%; }
 .tab.kobalt { flex: 0 0 auto; padding: 10px 12px; }
 .tab.kobalt img { width: 22px; height: 22px; border-radius: 5px; }
 .theme { min-width: 44px; padding: 0 10px; font-size: 1.2rem; }
