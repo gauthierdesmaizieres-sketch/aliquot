@@ -114,18 +114,20 @@ const TAB_ICONS = {
   plan: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15"/><path d="M15 6v15"/>',
   stock: '<path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/>',
   ideas: '<path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2V17h6v-.3c0-.8.4-1.5 1-2A7 7 0 0 0 12 2z"/>',
+  camera: '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>',
 };
-const tab = (key, label, active, extra = '') => h('a', { href: `#/${key === 'reactions' ? 'labo' : key}`, class: `tab ${active === key ? 'on' : ''} ${extra}` },
-  h('span', { class: 'tab-ico', innerHTML: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${TAB_ICONS[key]}</svg>` }), label);
+const icon = (key) => h('span', { class: 'tab-ico', innerHTML: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${TAB_ICONS[key]}</svg>` });
+const tab = (key, label, active, extra = '') => h('a', { href: `#/${key === 'reactions' ? 'labo' : key}`, class: `tab ${active === key ? 'on' : ''} ${extra}` }, icon(key), label);
 
-// Accueil : logo au centre, les quatre onglets autour (haut, droite, bas, gauche).
-export function orbit() {
+// Accueil : logo au centre, les onglets autour, et « Recevoir » (photos du téléphone) comme les autres.
+export function orbit(receive) {
   return h('div', { class: 'orbit' },
     h('img', { class: 'orb', src: 'icon.svg', alt: '' }),
     tab('reactions', t('reactions'), null, 'o1'),
     tab('plan', t('plan'), null, 'o2'),
     tab('stock', t('stock'), null, 'o3'),
-    tab('ideas', t('ideas'), null, 'o4'));
+    tab('ideas', t('ideas'), null, 'o4'),
+    h('button', { type: 'button', class: 'tab o5', onClick: receive }, icon('camera'), t('receive')));
 }
 
 export function tabs(active) {
