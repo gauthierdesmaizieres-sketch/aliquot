@@ -68,7 +68,8 @@ export async function reagentListView() {
     const state = expiryState(r.expiry);
     return h('a', { class: 'card', href: `#/reagent/${r.id}` },
       h('div', { class: 'card-top' }, h('strong', {}, r.product || r.ref || '—'), state && h('span', { class: `pill ${state}` }, t(state))),
-      h('small', {}, [r.supplier, r.ref, r.lot && `Lot ${r.lot}`, r.expiry && day(r.expiry)].filter(Boolean).join(' · ')));
+      h('small', {}, [r.supplier, r.ref, r.lot && `Lot ${r.lot}`, r.expiry && day(r.expiry)].filter(Boolean).join(' · ')),
+      ghsChips({ cas: r.cas, ref: r.ref, name: r.product }, { link: false }));
   };
   app.replaceChildren(
     topbar(h('h1', {}, t('stock')), langSwitch()),

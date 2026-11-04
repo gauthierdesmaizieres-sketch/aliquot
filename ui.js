@@ -42,15 +42,20 @@ export function photoImg(path) {
 
 
 
-// Mentions H d'un réactif (PubChem) : chargées après l'affichage, avec le lien vers la fiche.
-export function ghsChips(reagent) {
-  const box = h('div', { class: 'hazards' });
+// Mentions H d'un réactif (PubChem) : chargées quand la pastille entre à l'écran, avec le lien vers la fiche (sauf en liste).
+export function ghsChips(reagent, { link = true } = {}) {
+  const box = h('div', { class: 'hazards', style: 'min-height: 1.6em' });
   const query = reagent.cas || reagent.name || reagent.ref;
   if (!query) return box;
-  ghsFor(reagent).then((list) => box.replaceChildren(
-    ...(list ? list.map((g) => h('span', { class: 'hazard', title: g.text }, g.code)) : [h('small', {}, t('pubchemDown'))]),
-    h('a', { href: `https://pubchem.ncbi.nlm.nih.gov/#query=${encodeURIComponent(query)}`, target: '_blank', rel: 'noopener' }, 'PubChem'),
+  const load = () => ghsFor(reagent).then((list) => box.replaceChildren(
+    ...(list ? list.map((g) => h('span', { class: 'hazard', title: g.text }, g.code)) : link ? [h('small', {}, t('pubchemDown'))] : []),
+    ...(link ? [h('a', { href: `https://pubchem.ncbi.nlm.nih.gov/#query=${encodeURIComponent(query)}`, target: '_blank', rel: 'noopener' }, 'PubChem')] : []),
   ));
+  if (!('IntersectionObserver' in window)) { load(); return box; }
+  const observer = new IntersectionObserver(([entry]) => {
+    if (entry.isIntersecting) { observer.disconnect(); load(); }
+  }, { rootMargin: '150px' });
+  observer.observe(box);
   return box;
 }
 

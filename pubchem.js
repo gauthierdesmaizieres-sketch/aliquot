@@ -81,8 +81,7 @@ export async function stateFor(reagent) {
   }
 }
 
-// Renvoie la liste des mentions H, [] si le produit est introuvable, null si PubChem ne répond pas.
-export async function ghsFor(reagent) {
+async function lookupGhs(reagent) {
   try {
     const cid = await cidFor(reagent);
     if (!cid) return [];
@@ -91,4 +90,17 @@ export async function ghsFor(reagent) {
   } catch {
     return null;
   }
+}
+
+// Renvoie la liste des mentions H, [] si le produit est introuvable, null si PubChem ne répond pas.
+// Résultat gardé dans le navigateur : un produit n'est demandé qu'une fois. Un échec n'est jamais gardé.
+export async function ghsFor(reagent) {
+  const key = 'pubchem:ghs:' + JSON.stringify([reagent.cas, reagent.ref, reagent.name].map((s) => (s ?? '').trim().toLowerCase()));
+  try {
+    const hit = localStorage.getItem(key);
+    if (hit) return JSON.parse(hit);
+  } catch {}
+  const list = await lookupGhs(reagent);
+  if (list) try { localStorage.setItem(key, JSON.stringify(list)); } catch {}
+  return list;
 }
