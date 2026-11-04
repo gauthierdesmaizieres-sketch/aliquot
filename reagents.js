@@ -1,7 +1,8 @@
 import { t } from './i18n.js';
 import { store } from './store.js';
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
-import { app, h, day, link, button, fail, field, photoImg, sheet, topbar, langSwitch, shrink, tabs, toast } from './ui.js';
+import { app, h, day, link, button, fail, field, photoImg, sheet, topbar, langSwitch, shrink, tabs, toast, ghsChips } from './ui.js';
+import { stateFor } from './pubchem.js';
 import { parseGs1, parseText, learnKey, expiryState, coaName, DEFAULT_SUPPLIERS } from './label.js';
 
 // Le fichier wasm reste chez nous : aucune image ne quitte le téléphone pour la lecture.
@@ -213,12 +214,16 @@ export async function reagentDetailView(id) {
     },
   });
   const openCoa = async () => window.open(URL.createObjectURL(await store.download(r.coa_path)), '_blank');
+  const pubchemQuery = { cas: r.cas, ref: r.ref, name: r.product };
+  const stateText = h('span', {}, '…');
+  stateFor(pubchemQuery).then((key) => { stateText.textContent = key ? t(key) : '—'; });
   app.replaceChildren(
     topbar(link('#/stock', `‹ ${t('stock')}`, 'btn ghost'), link(`#/reagent-edit/${id}`, t('edit'), 'btn ghost')),
     h('main', {},
       h('h1', {}, r.product || r.ref || '—'),
       state && h('div', { class: 'actions' }, h('span', { class: `pill ${state}` }, t(state))),
-      row(t('supplier'), r.supplier), row(t('ref'), r.ref), row(t('reagentCas'), r.cas), row(t('lot'), r.lot),
+      ghsChips(pubchemQuery),
+      row(t('supplier'), r.supplier), row(t('ref'), r.ref), row(t('reagentCas'), r.cas), row(t('reagentState'), stateText), row(t('lot'), r.lot),
       row(t('expiry'), r.expiry && day(r.expiry)), row(t('location'), r.location), row(t('noteText'), r.note),
       r.photos.length > 0 && h('div', { class: 'thumbs' }, r.photos.map(photoImg)),
       h('h2', {}, t('coa')),

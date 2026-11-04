@@ -61,6 +61,26 @@ async function cidFor({ cas = '', ref = '', name = '' }) {
   return null;
 }
 
+// État physique d'après la première description PubChem (« … appears as a clear colorless liquid »).
+const STATES = [[/liquid|solution/i, 'stLiquid'], [/solid|powder|crystal/i, 'stSolid'], [/\bgas/i, 'stGas']];
+export function parseState(json) {
+  const first = JSON.stringify(json).match(/"String":"([^"]*)"/)?.[1] ?? '';
+  const hits = STATES.map(([re, key]) => ({ key, at: first.search(re) })).filter((x) => x.at >= 0);
+  return hits.sort((a, b) => a.at - b.at)[0]?.key ?? '';
+}
+
+// Clé d'état (stLiquid, stSolid, stGas) ou '' si inconnu. Une requête PubChem de plus que ghsFor.
+export async function stateFor(reagent) {
+  try {
+    const cid = await cidFor(reagent);
+    if (!cid) return '';
+    const res = await fetch(`${BASE}/pug_view/data/compound/${cid}/JSON?heading=Physical%20Description`);
+    return res.ok ? parseState(await res.json()) : '';
+  } catch {
+    return '';
+  }
+}
+
 // Renvoie la liste des mentions H, [] si le produit est introuvable, null si PubChem ne répond pas.
 export async function ghsFor(reagent) {
   try {

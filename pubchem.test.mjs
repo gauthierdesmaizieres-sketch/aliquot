@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { parseGhs, hazardKeys } from './pubchem.js';
+import { parseGhs, hazardKeys, parseState } from './pubchem.js';
 
 const sample = {
   Record: { Section: [{ Information: [{ Value: { StringWithMarkup: [
@@ -29,4 +29,9 @@ same(['H351', 'H315', 'H319', 'H336'], ['health', 'irritant']); // dichlorométh
 same(['H260', 'H301', 'H314', 'H360'], ['flammable', 'toxic', 'corrosive', 'health']); // NaBH4
 same(['H272', 'H290', 'H400', 'H280', 'H201'], ['oxidizer', 'corrosive', 'environment', 'gas', 'explosive']);
 same(['H999'], []);
+const described = (s) => ({ Record: { Section: [{ Information: [{ Value: { StringWithMarkup: [{ String: s }] } }] }] } });
+assert.equal(parseState(described('Acetone appears as a clear colorless liquid with a sweetish odor.')), 'stLiquid');
+assert.equal(parseState(described('White crystalline solid')), 'stSolid');
+assert.equal(parseState(described('Acetic acid, solution, more than 10% acid')), 'stLiquid');
+assert.equal(parseState({}), '');
 console.log('pubchem ok');
