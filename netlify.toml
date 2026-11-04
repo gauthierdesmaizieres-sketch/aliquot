@@ -1,6 +1,0 @@
-# Ancienne adresse : tout renvoie vers GitHub Pages, pour que les QR déjà imprimés continuent de marcher.
-[[redirects]]
-  from = "/*"
-  to = "https://gauthierdesmaizieres-sketch.github.io/paillasse/:splat"
-  status = 301
-  force = true

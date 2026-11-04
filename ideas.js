@@ -10,8 +10,8 @@ const IDEAS = [
     fr: ['Lecture des étiquettes par IA (Gemini)', 'Active dès la connexion : remplit produit, référence, CAS, lot et péremption à partir de la photo. Repli sur la lecture locale si l’IA échoue.'],
     de: ['Etiketten lesen mit KI (Gemini)', 'Aktiv nach der Anmeldung: füllt Produkt, Referenz, CAS, Charge und Verfallsdatum aus dem Foto aus. Bei einem KI-Fehler wird lokal gelesen.'] }],
   ['done', {
-    fr: ['Héberger sans Netlify : GitHub Pages + Supabase', 'Site sur GitHub Pages, fonction IA dans Supabase Edge Functions (clé Gemini en secret Supabase). Même compte et mot de passe. L’ancienne adresse Netlify renvoie vers la nouvelle.'],
-    de: ['Hosting ohne Netlify: GitHub Pages + Supabase', 'Website auf GitHub Pages, KI-Funktion in Supabase Edge Functions (Gemini-Schlüssel als Supabase-Secret). Gleiches Konto und Passwort. Die alte Netlify-Adresse leitet auf die neue weiter.'] }],
+    fr: ['Héberger sans Netlify : GitHub Pages + Supabase', 'Site sur GitHub Pages, fonction IA dans Supabase Edge Functions (clé Gemini en secret Supabase). Même compte et mot de passe.'],
+    de: ['Hosting ohne Netlify: GitHub Pages + Supabase', 'Website auf GitHub Pages, KI-Funktion in Supabase Edge Functions (Gemini-Schlüssel als Supabase-Secret). Gleiches Konto und Passwort.'] }],
   ['done', {
     fr: ['Mentions H : sources européennes en priorité', 'PubChem : classification CLP (ECHA) seulement, mentions déclarées par au moins 25 % des fournisseurs. Les fiches Sigma-Aldrich ne sont pas lisibles automatiquement (accès bloqué).'],
     de: ['H-Sätze: europäische Quellen zuerst', 'PubChem: nur CLP-Einstufung (ECHA), H-Sätze, die mindestens 25 % der Lieferanten melden. Sigma-Aldrich-Datenblätter sind nicht automatisch lesbar (Zugriff gesperrt).'] }],

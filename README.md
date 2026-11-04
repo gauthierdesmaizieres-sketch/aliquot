@@ -1,4 +1,6 @@
-# Paillasse
+# Aliquot
+
+Anciennement « Paillasse ».
 
 Application photo de labo (FR/DE).
 
@@ -18,7 +20,7 @@ Puis ouvrir http://localhost:8765
 
 ## Projet en ligne
 
-- Site : https://gauthierdesmaizieres-sketch.github.io/paillasse/ (GitHub Pages, branche `main`). L'ancienne adresse Netlify y renvoie.
+- Site : https://gauthierdesmaizieres-sketch.github.io/aliquot/ (GitHub Pages, branche `main`).
 - Lecture IA des étiquettes : fonction Supabase `read-label` (`supabase/functions/read-label/index.ts`), clé dans le secret Supabase `GEMINI_API_KEY`.
 - Base : projet Supabase « Lab Photo » (`config.js`). Les schémas `schema.sql` et `transfer.sql` y sont déjà appliqués.
 - Connexion : e-mail + mot de passe. Le lien de confirmation n'est à cliquer qu'une fois, à la création du compte.
