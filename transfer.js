@@ -10,9 +10,7 @@ export async function transferHome() {
   app.replaceChildren(
     topbar(h('h1', {}, t('appName')), langSwitch()),
     h('main', { class: 'transfer-home' },
-      orbit(() => store.createRoom().then((id) => { location.hash = `#/t/${id}`; }).catch(fail)),
-      h('h2', {}, t('trTitle')),
-      h('p', { class: 'muted' }, t('trIntro'))),
+      orbit(() => store.createRoom().then((id) => { location.hash = `#/t/${id}`; }).catch(fail))),
   );
 }
 
