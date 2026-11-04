@@ -76,7 +76,8 @@ function themeSwitch() {
 }
 
 export function topbar(left, ...right) {
-  return h('header', { class: 'top noprint' }, left, h('div', { class: 'top-right' }, ...right, themeSwitch()));
+  const brand = left.tagName === 'H1' ? h('div', { class: 'top-left' }, h('img', { class: 'brand', src: 'icon.svg', alt: '' }), left) : left;
+  return h('header', { class: 'top noprint' }, brand, h('div', { class: 'top-right' }, ...right, themeSwitch()));
 }
 
 export const homeLink = () => link('#/', `⌂ ${t('home')}`, 'btn ghost');
