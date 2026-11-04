@@ -110,15 +110,18 @@ export async function reagentFormView(existing) {
     pending.push(blob);
     thumbs.append(h('img', { alt: '', src: URL.createObjectURL(blob) }));
     try {
+      lastText = ''; // seul l'OCR fournit du texte à apprendre ; sans OCR, rien à apprendre
       const code = await readCode(file);
       if (code) fillEmpty(r, code, inputs);
-      const ai = await visionRead(blob).catch((e) => { fail(e); return null; });
-      if (ai) {
-        fillEmpty(r, ai, inputs);
-        lastText = ''; // pas de texte OCR : l'apprentissage du fournisseur ne s'applique pas
-      } else {
-        lastText = await readText(blob);
-        fillEmpty(r, parseText(lastText, profiles), inputs);
+      // L'IA n'est appelée que s'il manque un champ : le code GS1 peut déjà tout remplir.
+      if (['product', 'supplier', 'ref', 'cas', 'lot', 'expiry'].some((k) => !r[k])) {
+        const ai = await visionRead(blob).catch((e) => { fail(e); return null; });
+        if (ai) {
+          fillEmpty(r, ai, inputs);
+        } else {
+          lastText = await readText(blob);
+          fillEmpty(r, parseText(lastText, profiles), inputs);
+        }
       }
       readLot = r.lot;
       const known = stock.find((x) => x.ref && x.ref === r.ref && x.product);

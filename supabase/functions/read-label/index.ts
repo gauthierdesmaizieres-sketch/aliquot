@@ -26,14 +26,21 @@ Deno.serve(async (req) => {
   if (!team.ok || (await team.json()) !== true) return reply('non autorisé', 403);
 
   const { image } = await req.json();
-  const ai = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
-    method: 'POST',
-    headers: { 'x-goog-api-key': Deno.env.get('GEMINI_API_KEY') ?? '', 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: [{ inline_data: { mime_type: 'image/jpeg', data: image } }, { text: PROMPT }] }],
-      generationConfig: { responseMimeType: 'application/json' },
-    }),
+  const body = JSON.stringify({
+    contents: [{ parts: [{ inline_data: { mime_type: 'image/jpeg', data: image } }, { text: PROMPT }] }],
+    generationConfig: { responseMimeType: 'application/json' },
   });
+  // Gemini répond parfois 503 (surcharge) ou 429 (limite de requêtes) : on réessaie après une pause.
+  let ai!: Response;
+  for (const pause of [0, 3000, 8000]) {
+    if (pause) await new Promise((done) => setTimeout(done, pause));
+    ai = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
+      method: 'POST',
+      headers: { 'x-goog-api-key': Deno.env.get('GEMINI_API_KEY') ?? '', 'Content-Type': 'application/json' },
+      body,
+    });
+    if (ai.ok || (ai.status !== 503 && ai.status !== 429)) break;
+  }
   if (!ai.ok) return reply(`IA indisponible (${ai.status})`, 502);
 
   const text = (await ai.json()).candidates?.[0]?.content?.parts?.[0]?.text ?? '';
