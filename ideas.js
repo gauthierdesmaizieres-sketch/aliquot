@@ -36,6 +36,33 @@ const IDEAS = [
   ['idea', {
     fr: ['Export Excel automatique des réactifs', 'Ajouter une ligne par réactif scanné, sans cliquer sur Exporter.'],
     de: ['Automatischer Excel-Export der Reagenzien', 'Eine Zeile pro gescanntem Reagenz, ohne auf Exportieren zu klicken.'] }],
+  ['idea', {
+    fr: ['Liens des photos : renouvellement avant expiration', 'Les liens expirent après 1 h, mais restent gardés en mémoire pendant toute la session : photos cassées après une longue session.'],
+    de: ['Foto-Links: Erneuerung vor Ablauf', 'Die Links laufen nach 1 h ab, werden aber die ganze Sitzung im Speicher gehalten: Fotos sind nach langer Sitzung kaputt.'] }],
+  ['idea', {
+    fr: ['Téléphones sur la fiche QR', 'La fiche de sécurité publique affiche les numéros des responsables à qui a le QR. À décider : les retirer ou les garder.'],
+    de: ['Telefonnummern auf dem QR-Blatt', 'Das öffentliche Sicherheitsblatt zeigt die Nummern der Verantwortlichen jedem, der den QR hat. Zu entscheiden: entfernen oder behalten.'] }],
+  ['idea', {
+    fr: ['CoA : seulement des PDF', 'Le sélecteur accepte n’importe quel fichier, et un CoA ouvert dans un onglet peut exécuter du code. Limiter aux PDF et vérifier le type.'],
+    de: ['CoA: nur PDF', 'Der Dateiwähler akzeptiert jede Datei; ein im Tab geöffnetes CoA kann Code ausführen. Auf PDF beschränken und den Typ prüfen.'] }],
+  ['idea', {
+    fr: ['Fermer les inscriptions', 'N’importe qui peut créer un compte. Les données restent privées, mais désactiver les inscriptions dans Supabase.'],
+    de: ['Registrierung schließen', 'Jeder kann ein Konto anlegen. Die Daten bleiben privat, aber die Registrierung in Supabase deaktivieren.'] }],
+  ['idea', {
+    fr: ['Limite de taille pour la lecture IA', 'La fonction read-label accepte des images de toute taille. Refuser au-delà de 5 Mo avant la lecture.'],
+    de: ['Größenlimit für die KI-Lesung', 'Die Funktion read-label nimmt Bilder jeder Größe an. Ab 5 MB vor dem Lesen ablehnen.'] }],
+  ['idea', {
+    fr: ['Photo enregistrée avant sa ligne', 'Une photo envoyée puis une insertion échouée laissent une photo sans ligne. Insérer la ligne d’abord.'],
+    de: ['Foto vor seiner Zeile gespeichert', 'Ein hochgeladenes Foto bleibt ohne Zeile, wenn das Einfügen scheitert. Zuerst die Zeile einfügen.'] }],
+  ['idea', {
+    fr: ['Listes paginées', 'La liste des réactions charge tout et compte les photos dans le navigateur. Ralentit après des milliers d’entrées : compter côté base ou paginer.'],
+    de: ['Seitenweise Listen', 'Die Reaktionsliste lädt alles und zählt die Fotos im Browser. Wird nach tausenden Einträgen langsam: in der Datenbank zählen oder blättern.'] }],
+  ['idea', {
+    fr: ['Tests des règles et des salles', 'Aucun test sur les règles Supabase, les salles temporaires, la lecture IA ni la suppression des photos. Ajouter un script SQL de contrôle.'],
+    de: ['Tests für Regeln und Räume', 'Keine Tests für die Supabase-Regeln, die Transporträume, die KI-Lesung und das Löschen der Fotos. Ein SQL-Prüfskript ergänzen.'] }],
+  ['idea', {
+    fr: ['Retirer le stockage de démo', 'Une seconde copie du stockage (environ 85 lignes dans store.js) ne sert que pour la démo. À supprimer si personne ne l’utilise.'],
+    de: ['Demo-Speicher entfernen', 'Eine zweite Speicherkopie (etwa 85 Zeilen in store.js) dient nur der Demo. Entfernen, falls niemand sie nutzt.'] }],
 ];
 
 export function ideasView() {

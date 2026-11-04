@@ -20,7 +20,9 @@ export const when = (iso) => new Date(iso).toLocaleString(lang === 'de' ? 'de-CH
 export const day = (iso) => new Date(iso).toLocaleDateString(lang === 'de' ? 'de-CH' : 'fr-CH');
 export const link = (href, label, cls = 'btn') => h('a', { href, class: cls }, label);
 export const button = (label, onClick, cls = 'btn') => h('button', { type: 'button', class: cls, onClick }, label);
-export const safeHttp = (s) => s.split('\n').map((l) => l.trim()).filter((l) => /^https?:\/\//i.test(l));
+export const safeHttp = (s) => s.split('\n').map((l) => l.trim()).filter((l) => {
+  try { new URL(l); return /^https?:\/\//i.test(l); } catch { return false; } // un lien mal écrit ne doit pas bloquer la page
+});
 
 export function toast(msg, cls = '') {
   document.querySelector('.toast')?.remove();
@@ -106,13 +108,23 @@ export async function shrink(file, max = 2000) {
   }
 }
 
+// Icônes de contour (style Lucide) au-dessus de chaque libellé.
+const TAB_ICONS = {
+  reactions: '<path d="M10 2v7.31"/><path d="M14 9.3V1.99"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/><path d="M5.52 16h12.96"/>',
+  plan: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15"/><path d="M15 6v15"/>',
+  stock: '<path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/>',
+  ideas: '<path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2V17h6v-.3c0-.8.4-1.5 1-2A7 7 0 0 0 12 2z"/>',
+};
+const tab = (key, label, active) => h('a', { href: `#/${key === 'reactions' ? 'labo' : key}`, class: `tab ${active === key ? 'on' : ''}` },
+  h('span', { class: 'tab-ico', innerHTML: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${TAB_ICONS[key]}</svg>` }), label);
+
 export function tabs(active) {
   return h('nav', { class: 'tabs noprint' },
     h('a', { href: '#/', class: 'tab home', title: t('home'), ariaLabel: t('home') }, '⌂'),
-    link('#/labo', t('reactions'), `tab ${active === 'reactions' ? 'on' : ''}`),
-    link('#/plan', t('plan'), `tab ${active === 'plan' ? 'on' : ''}`),
-    link('#/stock', t('stock'), `tab ${active === 'stock' ? 'on' : ''}`),
-    link('#/ideas', t('ideas'), `tab ${active === 'ideas' ? 'on' : ''}`),
+    tab('reactions', t('reactions'), active),
+    tab('plan', t('plan'), active),
+    tab('stock', t('stock'), active),
+    tab('ideas', t('ideas'), active),
     h('a', { href: 'https://gauthierdesmaizieres-sketch.github.io/Kobalt/', target: '_blank', rel: 'noopener', class: 'tab kobalt', title: 'Kobalt' },
       h('img', { src: 'kobalt.png', alt: '' }), 'Kobalt'));
 }

@@ -31,10 +31,9 @@ function supabaseStore() {
     async getReaction(id) { return ok(await db.from('reactions').select().eq('id', id).single()); },
     async saveReaction(r) { return ok(await db.from('reactions').upsert(r).select().single()); },
     async deleteReaction(id) {
-      const entries = await this.listEntries(id);
-      const paths = entries.map((e) => e.photo_path).filter(Boolean);
+      const paths = (await this.listEntries(id)).map((e) => e.photo_path).filter(Boolean);
+      ok(await db.from('reactions').delete().eq('id', id)); // les entrées partent avec la réaction (cascade)
       if (paths.length) ok(await db.storage.from('photos').remove(paths));
-      ok(await db.from('reactions').delete().eq('id', id));
     },
     async listEntries(id) { return ok(await db.from('entries').select().eq('reaction_id', id).order('taken_at')); },
     async allEntries() { return ok(await db.from('entries').select('reaction_id, step, tlc, photo_path')); },
@@ -45,8 +44,8 @@ function supabaseStore() {
     },
     async updateEntry(id, patch) { ok(await db.from('entries').update(patch).eq('id', id)); },
     async deleteEntry(e) {
-      if (e.photo_path) ok(await db.storage.from('photos').remove([e.photo_path]));
       ok(await db.from('entries').delete().eq('id', e.id));
+      if (e.photo_path) ok(await db.storage.from('photos').remove([e.photo_path]));
     },
     async list(table) { return ok(await db.from(table).select().order('created_at', { ascending: false })); },
     async get(table, id) { return ok(await db.from(table).select().eq('id', id).single()); },

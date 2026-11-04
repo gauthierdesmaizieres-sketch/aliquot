@@ -235,8 +235,8 @@ export async function reagentDetailView(id) {
         button(t('addCoa'), () => picker.click())),
       button(t('delete'), async () => {
         if (!confirm(t('confirmDelete'))) return;
-        await store.removeFiles([...r.photos, r.coa_path].filter(Boolean));
         await store.remove('reagents', id);
+        await store.removeFiles([...r.photos, r.coa_path].filter(Boolean));
         location.hash = '#/stock';
       }, 'btn ghost danger')),
     picker,
