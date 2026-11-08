@@ -83,7 +83,7 @@ function themeSwitch() {
 }
 
 export function topbar(left, ...right) {
-  const brand = left.tagName === 'H1' ? h('div', { class: 'top-left' }, h('img', { class: 'brand', src: 'icon.svg', alt: '' }), left) : left;
+  const brand = left.tagName === 'H1' ? h('div', { class: 'top-left' }, h('img', { class: 'brand', src: 'icon-192.png', alt: '' }), left) : left;
   return h('header', { class: 'top noprint' }, brand, h('div', { class: 'top-right' }, ...right, themeSwitch()));
 }
 
@@ -123,7 +123,7 @@ const tab = (key, label, active, extra = '') => h('a', { href: `#/${key === 'rea
 // Accueil : logo au centre, les onglets autour, et « Recevoir » (photos du téléphone) comme les autres.
 export function orbit(receive) {
   return h('div', { class: 'orbit' },
-    h('img', { class: 'orb', src: 'icon.svg', alt: '' }),
+    h('img', { class: 'orb', src: 'icon-192.png', alt: '' }),
     tab('reactions', t('reactions'), null, 'o1'),
     tab('plan', t('plan'), null, 'o2'),
     tab('stock', t('stock'), null, 'o3'),
