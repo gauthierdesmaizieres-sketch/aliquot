@@ -59,6 +59,7 @@ function supabaseStore() {
     async removeFiles(paths) { if (paths.length) ok(await db.storage.from('photos').remove(paths)); },
     async download(path) { return ok(await db.storage.from('photos').download(path)); },
     async createRoom() { return ok(await db.rpc('create_room')); },
+    async roomOpen(room) { return ok(await db.rpc('room_open', { room })); },
     async roomFiles(room) { return ok(await db.rpc('room_files', { room })); },
     async roomUpload(room, blob) {
       const path = `${room}/${crypto.randomUUID()}.${blob.type === 'image/jpeg' ? 'jpg' : blob.type.split('/')[1] ?? 'jpg'}`;

@@ -5,12 +5,21 @@ import { app, h, button, fail, topbar, langSwitch, shrink, homeLink, orbit } fro
 let timer;
 export const stopTransfer = () => clearInterval(timer);
 
+// Chaque appareil retient sa dernière session : « Photos » la rouvre au lieu d'en créer une vide.
+const LAST = 'transferRoom';
+const remember = (room) => { try { if (room) localStorage.setItem(LAST, room); else localStorage.removeItem(LAST); } catch {} };
+async function openRoom() {
+  let last = null;
+  try { last = localStorage.getItem(LAST); } catch {}
+  location.hash = `#/t/${last && await store.roomOpen(last) ? last : await store.createRoom()}`;
+}
+
 export async function transferHome() {
   store.sweep().catch(() => {}); // shortcut: effacement à la prochaine visite du site ; ajouter une tâche serveur si le site reste longtemps sans visite
   app.replaceChildren(
     topbar(h('h1', {}, t('appName')), langSwitch()),
     h('main', { class: 'transfer-home' },
-      orbit(() => store.createRoom().then((id) => { location.hash = `#/t/${id}`; }).catch(fail))),
+      orbit(() => openRoom().catch(fail))),
   );
 }
 
@@ -79,11 +88,13 @@ export async function transferRoom(room) {
     if (!confirm(t('trCloseConfirm'))) return;
     stopTransfer();
     await store.closeRoom(room);
+    remember(null);
     await store.sweep();
     location.hash = '#/';
   }, 'btn ghost danger');
 
   stopTransfer();
+  remember(room);
   await refresh();
   app.replaceChildren(
     topbar(h('h1', {}, t('trRoom')), homeLink(), langSwitch()),
