@@ -15,6 +15,17 @@ async function openRoom() {
   location.hash = `#/t/${resume ? last : await store.createRoom()}`;
 }
 
+// Chaque scan ouvre un nouvel onglet : les anciens suivent la dernière session, sinon leurs photos partent là où le PC ne regarde plus.
+function follow() {
+  const [, page, room] = location.hash.split('/');
+  if (page !== 't') return;
+  let last;
+  try { last = localStorage.getItem(LAST); } catch { return; }
+  if (last !== room) location.hash = last ? `#/t/${last}` : '#/';
+}
+addEventListener('storage', (e) => { if (e.key === LAST) follow(); });
+document.addEventListener('visibilitychange', () => { if (!document.hidden) follow(); });
+
 export async function transferHome() {
   store.sweep().catch(() => {}); // shortcut: effacement à la prochaine visite du site ; ajouter une tâche serveur si le site reste longtemps sans visite
   app.replaceChildren(
@@ -107,5 +118,5 @@ export async function transferRoom(room) {
       count, grid, h('p', { class: 'muted' }, t('trExpiry')), close),
     camera, gallery,
   );
-  timer = setInterval(() => refresh().catch(stopTransfer), 3000);
+  timer = setInterval(() => { if (!document.hidden) refresh().catch(stopTransfer); }, 3000);
 }
