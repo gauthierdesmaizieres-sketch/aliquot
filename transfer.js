@@ -5,13 +5,14 @@ import { app, h, button, fail, topbar, langSwitch, shrink, homeLink, orbit } fro
 let timer;
 export const stopTransfer = () => clearInterval(timer);
 
-// Chaque appareil retient sa dernière session : « Photos » la rouvre au lieu d'en créer une vide.
+// Chaque appareil retient sa dernière session ; « Photos » propose de la rouvrir (PC partagé : Annuler en crée une neuve).
 const LAST = 'transferRoom';
 const remember = (room) => { try { if (room) localStorage.setItem(LAST, room); else localStorage.removeItem(LAST); } catch {} };
 async function openRoom() {
   let last = null;
   try { last = localStorage.getItem(LAST); } catch {}
-  location.hash = `#/t/${last && await store.roomOpen(last) ? last : await store.createRoom()}`;
+  const resume = last && await store.roomOpen(last) && confirm(t('trResume'));
+  location.hash = `#/t/${resume ? last : await store.createRoom()}`;
 }
 
 export async function transferHome() {
